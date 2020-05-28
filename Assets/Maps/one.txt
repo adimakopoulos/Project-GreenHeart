@@ -1,0 +1,11 @@
+width=10,height=10,
+Watter,	Castle,	Grass,	Rock,	Castle,	Watter,	Watter,	Watter,	Watter,	Watter,	End line0
+Watter,	Watter,	Watter,	Watter,	Watter,	Watter,	Watter,	Watter,	Watter,	Watter,	End line1
+Watter,	Watter,	Watter,	Watter,	Watter,	Watter,	Watter,	Watter,	Watter,	Watter,	End line2
+Watter,	Watter,	Watter,	Watter,	Watter,	Watter,	Watter,	Watter,	Watter,	Watter,	End line3
+Watter,	Watter,	Watter,	Watter,	Watter,	Watter,	Watter,	Watter,	Watter,	Watter,	End line4
+Watter,	Watter,	Watter,	Watter,	Watter,	Watter,	Watter,	Watter,	Watter,	Watter,	End line5
+Watter,	Watter,	Watter,	Watter,	Watter,	Watter,	Watter,	Watter,	Watter,	Watter,	End line6
+Watter,	Watter,	Watter,	Watter,	Watter,	Watter,	Watter,	Watter,	Watter,	Watter,	End line7
+Watter,	Watter,	Watter,	Watter,	Watter,	Watter,	Watter,	Watter,	Watter,	Watter,	End line8
+Watter,	Watter,	Watter,	Watter,	Watter,	Watter,	Watter,	Watter,	Watter,	Watter,	End line9

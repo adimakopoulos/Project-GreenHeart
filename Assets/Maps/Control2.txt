@@ -1,0 +1,6 @@
+width=5,height=10,
+Castle,	Grass,	Grass,	Grass,	Grass,	Grass,	Grass,	Grass,	Grass,	Grass,	
+Grass,	Grass,	Grass,	Grass,	Grass,	Grass,	Grass,	Grass,	Grass,	Grass,	
+Grass,	Grass,	Grass,	Grass,	Grass,	Grass,	Grass,	Grass,	Grass,	Grass,	
+Grass,	Grass,	Grass,	Grass,	Grass,	Grass,	Grass,	Grass,	Grass,	Grass,	
+Grass,	Grass,	Grass,	Grass,	Grass,	Grass,	Grass,	Grass,	Grass,	Castle,	
