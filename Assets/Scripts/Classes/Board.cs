@@ -13,12 +13,11 @@ public  class Board  {
     string mapName="" ;//gets init from a triger in the textfield savefilename
 
 
-    public Board() { }
 
     public Board(int width, int height) {
         this.Width = width;
         this.Height = height;
-
+        
 
         tiles = new Tile[width, height];
         for (int x = 0; x < width; x++)
