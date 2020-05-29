@@ -6,7 +6,7 @@ public class Unit {
 
 
 
-    int x, y;
+    
     int attack;
     public int health;
     Player owner;
@@ -19,14 +19,20 @@ public class Unit {
 
 
     public Unit(Tile tile, Player player) {
-        this.X = tile.X;
-        this.Y = tile.Y;
+
         this.attack = 25;
         this.health = 100;
         owner = player;
         CurrentTile = tile;
         TargetTile = tile;
-        go_Unit = new GameObject("Unit at x= " + x + " y=+" + y + "-Player:" + player.Name);
+        go_Unit = GameObject.Instantiate(Resources.Load("PreFabs/PreUnit", typeof(GameObject))) as GameObject;
+
+
+        //Spawn unit in a random posiotion inside a tile
+        go_Unit.transform.SetParent(tile.getGoTile().transform, false);
+        go_Unit.transform.position = new Vector3(Random.Range(0f, 0.9f) + tile.GamePosition.x, 5, Random.Range(0f, 0.9f) + tile.GamePosition.z);
+
+
         go_Unit.AddComponent<mono_Unit>().setUnitData(this);
        
 
@@ -42,8 +48,7 @@ public class Unit {
     }
     public Tile getTargetTile() { return TargetTile; }
     public void setTargetTile(Tile target) { this.TargetTile = target; }
-    public int X { get => x; set => x = value; }
-    public int Y { get => y; set => y = value; }
+
     public GameObject Go_Unit { get => go_Unit; }
     public Player Owner { get => owner; set => owner = value; }
     public float Speed { get => speed; set => speed = value; }

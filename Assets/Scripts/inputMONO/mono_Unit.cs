@@ -5,7 +5,7 @@ using UnityEngine.EventSystems;
 
 public class mono_Unit : MonoBehaviour
 {    
-    public Sprite unitSpr;
+ 
     Unit unitData;
 
  
@@ -37,21 +37,18 @@ public class mono_Unit : MonoBehaviour
     public void setUnitData(Unit data)
     {
         unitData = data;
-        unitSpr = Resources.Load("SPRITES/spr_unit", typeof(Sprite)) as Sprite;
+        
 
         //SetUp SpriteRenderer with sprite file and Layer 
         Tile tile = data.getCurrentTile();
-        gameObject.AddComponent<SpriteRenderer>();
-        gameObject.GetComponent<SpriteRenderer>().sprite = unitSpr;
-        gameObject.GetComponent<SpriteRenderer>().sortingLayerName = "UnitsGraphics";
-        gameObject.GetComponent<SpriteRenderer>().sortingOrder = 1;
+
         gameObject.GetComponent<Renderer>().material.color = tile.Owner.PlayerColor;//color the unit
 
         //Spawn unit in a random posiotion inside a tile
         gameObject.transform.SetParent(tile.getGoTile().transform, false);
-        gameObject.transform.position = new Vector3(Random.Range(0f, 0.9f) + tile.X, Random.Range(0f, 0.9f) + tile.Y, 0);
+        gameObject.transform.position = new Vector3(Random.Range(0f, 0.9f) + tile.GamePosition.x,0, Random.Range(0f, 0.9f) + tile.GamePosition.z);
   
-        //
+     
 
     }
 
@@ -66,8 +63,8 @@ public class mono_Unit : MonoBehaviour
             if (dir != Tile.TileMovementDirection.Center)
             {
                 //set Target tile that unit must start moving 
-                int x = unitData.getCurrentTile().X;
-                int y = unitData.getCurrentTile().Y;
+                int x = unitData.getCurrentTile().GamePosition.x;
+                int y = unitData.getCurrentTile().GamePosition.y;
                 //get the neighboring tiles 
                 switch (dir)
                 {
@@ -98,8 +95,8 @@ public class mono_Unit : MonoBehaviour
             if (unitData.getCurrentTile() != unitData.getTargetTile())
             {
                 //+16pixe to move in the center of the target , not the 0,0 corner
-                float targetX = unitData.getTargetTile().X+0.5f;
-                float targetY = unitData.getTargetTile().Y+0.5f;
+                float targetX = unitData.getTargetTile().GamePosition.x +0.5f;
+                float targetY = unitData.getTargetTile().GamePosition.y +0.5f;
                 Vector3 destination = new Vector3(targetX, targetY, 0);
                 gameObject.transform.position = Vector3.Lerp(transform.position, destination, unitData.Speed * Time.deltaTime);
 
@@ -149,9 +146,7 @@ public class mono_Unit : MonoBehaviour
     public void killUnit()
     {
         unitData.health = 0;
-        unitSpr = Resources.Load("SPRITES/spr_Death", typeof(Sprite)) as Sprite;
-       
-        unitData.Go_Unit.AddComponent<Animator>().runtimeAnimatorController = Resources.Load<RuntimeAnimatorController>("Animation/anim_Death_0");
+        //creat particles and die LUL
         Destroy(unitData.Go_Unit,0.5f);
     }
 
@@ -179,7 +174,7 @@ public class mono_Unit : MonoBehaviour
                 if (idleMoveTimer < 0)
                 {
                     //randLocalPos.Y should be lower than 1 so unit does not apear outside of the tiles boarders
-                    randLocalPos = new Vector3(Random.Range(0f, 0.9f), Random.Range(0f, 0.9f), 0);
+                    randLocalPos = new Vector3(Random.Range(0f, 0.9f), 0, Random.Range(0f, 0.9f));
                     
                     idleMoveTimer = 4.0f;
 

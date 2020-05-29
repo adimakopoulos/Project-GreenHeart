@@ -28,13 +28,15 @@ public class Mouse : MonoBehaviour , IPointerClickHandler{
     }
 
 
-	
-	// Update is called once per frame
-	void Update () {
 
+    // Update is called once per frame
+    
+
+    void Update () {
 
 
         Vector3 currFramepos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        currFramepos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         //camera mouvment by dragging
         dragCamera(currFramepos);
         //create Selection effect on the boarder of the tile that is clicked
@@ -76,30 +78,32 @@ public class Mouse : MonoBehaviour , IPointerClickHandler{
             //there are 4 possible outcomes. North-up, South-down, West-left, East-right.
 
             bool isCooltoMove;
-            if (firstTile.X > Mathf.FloorToInt(currFramepos.x))
+            int ftx = firstTile.GamePosition.x;
+            int ftz = firstTile.GamePosition.z;
+            if (ftx > Mathf.FloorToInt(currFramepos.x))
             {
-                _neighborTile= mono_BoardCreate.map.getTileFromMap(firstTile.X-1, firstTile.Y); //get the neighboring tile that is x-1;
+                _neighborTile= mono_BoardCreate.map.getTileFromMap(ftx - 1, ftz); //get the neighboring tile that is x-1;
                 isCooltoMove = checkMoveValidity(firstTile, _neighborTile, Tile.TileMovementDirection.Left);
                 if (isCooltoMove) { firstTile.MoveDirection = Tile.TileMovementDirection.Left; }
 
             }//left
-            if (firstTile.X < Mathf.FloorToInt(currFramepos.x))
+            if (ftx < Mathf.FloorToInt(currFramepos.x))
             {
-                _neighborTile = mono_BoardCreate.map.getTileFromMap(firstTile.X+1, firstTile.Y);
+                _neighborTile = mono_BoardCreate.map.getTileFromMap(ftx + 1, ftz);
                 isCooltoMove = checkMoveValidity(firstTile, _neighborTile, Tile.TileMovementDirection.Right);
                 if (isCooltoMove) { firstTile.MoveDirection = Tile.TileMovementDirection.Right;}
 
             }//right
-            if (firstTile.Y > Mathf.FloorToInt(currFramepos.y))
+            if (firstTile.GamePosition.y > Mathf.FloorToInt(currFramepos.y))
             {
-                _neighborTile = mono_BoardCreate.map.getTileFromMap(firstTile.X, firstTile.Y-1);
+                _neighborTile = mono_BoardCreate.map.getTileFromMap(ftx, ftz-1);
                 isCooltoMove = checkMoveValidity(firstTile, _neighborTile, Tile.TileMovementDirection.Down);
                 if (isCooltoMove) { firstTile.MoveDirection = Tile.TileMovementDirection.Down;}
 
             }//down
-            if (firstTile.Y < Mathf.FloorToInt(currFramepos.y))
+            if (firstTile.GamePosition.y < Mathf.FloorToInt(currFramepos.y))
             {
-                _neighborTile = mono_BoardCreate.map.getTileFromMap(firstTile.X, firstTile.Y+1);
+                _neighborTile = mono_BoardCreate.map.getTileFromMap(ftx, ftz+1);
                 isCooltoMove = checkMoveValidity(firstTile, _neighborTile, Tile.TileMovementDirection.Up);
                 if (isCooltoMove) { firstTile.MoveDirection = Tile.TileMovementDirection.Up; }
                
@@ -179,7 +183,7 @@ public class Mouse : MonoBehaviour , IPointerClickHandler{
                     //Debug.Log("GO destroyed");
                 }
                 //create new selection vfx
-                selected_last = new Vfx(tile.X, tile.Y, Vfx.tileVfx.Select);
+                selected_last = new Vfx(tile.GamePosition.x, tile.GamePosition.y, Vfx.tileVfx.Select);
 
 
             }
@@ -192,7 +196,7 @@ public class Mouse : MonoBehaviour , IPointerClickHandler{
 
     void updateUI(Vector3 currFramepos)
     {
-        //Update UI 
+        //Update UI Camera.main.ScreenPointToRay(Input.mousePosition);
         //Tile tile = GameObject.FindObjectOfType<mono_BoardCreate>().getBoard().getTileFromMap(Camera.main.ScreenToWorldPoint(Input.mousePosition));
         Tile tile = mono_BoardCreate.map.getTileFromMap(currFramepos);//a bit cleaner 
         if (Input.GetMouseButtonUp(0))                                                        

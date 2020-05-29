@@ -5,14 +5,14 @@ using UnityEngine;
 public class Tile {
 
     //Data
-    public enum TileType { Empty, Grass, Rock, Watter, Castle };
+    public enum TileType { Empty, Grass, Rock, Water, Castle };
     public enum TileState { Neutral, Claimed, Besieged };
     public enum TileMovementDirection { Up, Down, Left, Right, Center };
     private TileType type = TileType.Empty;
     private TileState state = TileState.Neutral;
     private TileMovementDirection moveDirection = TileMovementDirection.Center;
-    private int x;
-    private int y;
+    private Vector3Int gamePosition;
+
     GameObject go_Tile;
     Player owner = mono_PlayerManager.p0; //neutral player as an owner
     float spawnRate = 2.0f;
@@ -29,15 +29,14 @@ public class Tile {
 
 
 
-    public Tile(int x=0, int y=0, int z=0, TileType type = TileType.Grass, TileState state= TileState.Neutral) {
-        this.X = x;
-        this.Y = y;
+    public Tile(Vector3Int Location, TileType type = TileType.Grass, TileState state= TileState.Neutral) {
+        this.gamePosition = Location;
         this.State = state;
         
       
         go_Tile = GameObject.Instantiate(Resources.Load("PreFabs/PreTile", typeof(GameObject))) as GameObject;
-        go_Tile.name = "Tile = X:" + x + " Y:" + y + " Z:" + z;
-        go_Tile.transform.position = new Vector3(x, y, z);
+        go_Tile.name = "Tile = X:" + gamePosition;
+        go_Tile.transform.position = gamePosition;
         setTileType(type);
 
 
@@ -80,11 +79,11 @@ public class Tile {
         }
         else if (Tile.TileType.Rock == type)
         {
-            go.GetComponent<Renderer>().material = Resources.Load("Materials/MatGrass", typeof(Material)) as Material;
+            go.GetComponent<Renderer>().material = Resources.Load("Materials/MatRock", typeof(Material)) as Material;
         }
-        else if (Tile.TileType.Watter == type)
+        else if (Tile.TileType.Water == type)
         {
-            go.GetComponent<Renderer>().material = Resources.Load("Materials/MatGrass", typeof(Material)) as Material;
+            go.GetComponent<Renderer>().material = Resources.Load("Materials/MatWater", typeof(Material)) as Material;
         }
 
         else if (Tile.TileType.Empty == type)
@@ -122,31 +121,7 @@ public class Tile {
 
     }
 
-    public int X
-    {
-        get
-        {
-            return x;
-        }
 
-        set
-        {
-            x = value;
-        }
-    }
-
-    public int Y
-    {
-        get
-        {
-            return y;
-        }
-
-        set
-        {
-            y = value;
-        }
-    }
 
     public Player Owner
     {
@@ -174,7 +149,7 @@ public class Tile {
 
         if (this.dirVfx == null)
         {
-            dirVfx = new Vfx(this.x, this.y, Vfx.tileVfx.Center);//When  a new owner gets ownership of tile the direction of tile should be center
+            dirVfx = new Vfx(this.GamePosition.x, this.GamePosition.y, Vfx.tileVfx.Center);//When  a new owner gets ownership of tile the direction of tile should be center
         }
         else
         {
@@ -215,6 +190,7 @@ public class Tile {
         set => type = value;
 
     }
+    public Vector3Int GamePosition { get => gamePosition; set => gamePosition = value; }
 
     public void clearUnits (){
         units.Clear();

@@ -24,7 +24,7 @@ public  class Board  {
         {
             for (int z = 0; z < height; z++)
             {
-                tiles[x, z] = new Tile(x,0, z, Tile.TileType.Grass, Tile.TileState.Neutral) ;                
+                tiles[x, z] = new Tile(new Vector3Int(x,0,z), Tile.TileType.Grass, Tile.TileState.Neutral) ;                
                 tiles[x, z].getGoTile().transform.SetParent(GameObject.Find("go_Board").transform, true);//make all the tiles a "Parent of go_Bord in the unity Hierarchy"
                 
             }
@@ -32,7 +32,6 @@ public  class Board  {
 
         tiles[0, 0].setTileType(Tile.TileType.Castle);
         tiles[Width-1, Height-1].setTileType(Tile.TileType.Castle);
-
         Debug.Log("World created with Width: " + this.width + ",Height " + this.height);
     }
 
