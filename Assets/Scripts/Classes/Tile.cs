@@ -29,17 +29,18 @@ public class Tile {
 
 
 
-    public Tile(int x, int y, TileType type, TileState state) {
+    public Tile(int x=0, int y=0, int z=0, TileType type = TileType.Grass, TileState state= TileState.Neutral) {
         this.X = x;
         this.Y = y;
         this.State = state;
-        go_Tile = new GameObject("Tile = X:" + x + " Y:" + y);
-        go_Tile.transform.position = new Vector3(x, y, 0);
-        go_Tile.AddComponent<SpriteRenderer>();
+        
+      
+        go_Tile = GameObject.Instantiate(Resources.Load("PreFabs/PreTile", typeof(GameObject))) as GameObject;
+        go_Tile.name = "Tile = X:" + x + " Y:" + y + " Z:" + z;
+        go_Tile.transform.position = new Vector3(x, y, z);
         setTileType(type);
 
-        go_Tile.GetComponent<SpriteRenderer>().sortingLayerName = "Lr_Tilemap";
-        go_Tile.GetComponent<SpriteRenderer>().sortingOrder = 0;
+
         go_Tile.AddComponent<mono_Clock>();
 
 
@@ -70,32 +71,33 @@ public class Tile {
 
 
 
-    //hook up the Sprites with the game objectes()
+    //hook up the Materials with the game objectes()
     private void setSprite(TileType type, GameObject go) {
 
         if (Tile.TileType.Grass == type)
-        {
-            go.GetComponent<SpriteRenderer>().sprite = Resources.Load("Sprites/Tiles/spr_grass", typeof(Sprite)) as Sprite;
+        {            
+            go.GetComponent<Renderer>().material = Resources.Load("Materials/MatGrass", typeof(Material)) as Material;
         }
         else if (Tile.TileType.Rock == type)
         {
-            go.GetComponent<SpriteRenderer>().sprite = Resources.Load("Sprites/Tiles/spr_rock", typeof(Sprite)) as Sprite;
+            go.GetComponent<Renderer>().material = Resources.Load("Materials/MatGrass", typeof(Material)) as Material;
         }
         else if (Tile.TileType.Watter == type)
         {
-            go.GetComponent<SpriteRenderer>().sprite = Resources.Load("Sprites/Tiles/spr_watter", typeof(Sprite)) as Sprite;
+            go.GetComponent<Renderer>().material = Resources.Load("Materials/MatGrass", typeof(Material)) as Material;
         }
 
         else if (Tile.TileType.Empty == type)
         {
 
-            go.GetComponent<SpriteRenderer>().sprite = null;
+            go.GetComponent<Renderer>().material = null;
         }
 
         else if (Tile.TileType.Castle == type)
         {
 
-            go.GetComponent<SpriteRenderer>().sprite = Resources.Load("Sprites/Tiles/spr_castle", typeof(Sprite)) as Sprite;
+            //go.GetComponent<Renderer>().material = Resources.Load("Materials/MatGrass", typeof(Material)) as Material;
+            Debug.Log("Castelano must be its own Buiing on top of the tile, Good luvk... :-)");
         }
         else {
             Debug.Log("SPRITE WASN'T FOUND");

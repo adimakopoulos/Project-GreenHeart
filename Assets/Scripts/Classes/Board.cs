@@ -17,15 +17,15 @@ public  class Board  {
     public Board(int width, int height) {
         this.Width = width;
         this.Height = height;
-        
+
 
         tiles = new Tile[width, height];
         for (int x = 0; x < width; x++)
         {
-            for (int y = 0; y < height; y++)
+            for (int z = 0; z < height; z++)
             {
-                tiles[x, y] = new Tile(x, y, Tile.TileType.Grass, Tile.TileState.Neutral) ;                
-                tiles[x, y].getGoTile().transform.SetParent(GameObject.Find("go_Board").transform, true);//make all the tiles a "Parent of go_Bord in the unity Hierarchy"
+                tiles[x, z] = new Tile(x,0, z, Tile.TileType.Grass, Tile.TileState.Neutral) ;                
+                tiles[x, z].getGoTile().transform.SetParent(GameObject.Find("go_Board").transform, true);//make all the tiles a "Parent of go_Bord in the unity Hierarchy"
                 
             }
         }
@@ -114,59 +114,59 @@ public  class Board  {
 
 
 
-    public void loadBoard() {
-        string content = "";
-        string[] contentArray;
+    //public void loadBoard() {
+    //    string content = "";
+    //    string[] contentArray;
         
-        string path = Application.dataPath + "/Maps/"+mapName.Trim()+".txt";
+    //    string path = Application.dataPath + "/Maps/"+mapName.Trim()+".txt";
         
-        if (File.Exists(path))
-        {
-            content = File.ReadAllText(path).Replace(" ","");
-            contentArray = content.Split(',');
-            Debug.Log("Loeaded DATA");
+    //    if (File.Exists(path))
+    //    {
+    //        content = File.ReadAllText(path).Replace(" ","");
+    //        contentArray = content.Split(',');
+    //        Debug.Log("Loeaded DATA");
             
-        }
-        else {
-            Debug.Log("map not found.");
-            return;
-            //If we dont have a map there is no reason to exec ther rest of the routune
-        }
+    //    }
+    //    else {
+    //        Debug.Log("map not found.");
+    //        return;
+    //        //If we dont have a map there is no reason to exec ther rest of the routune
+    //    }
 
-        //clear current map
-        if (tiles != null)
-        {
-            clearBoard();
-        }
-        else {
-            Debug.Log("No map found to clear");
-        }
+    //    //clear current map
+    //    if (tiles != null)
+    //    {
+    //        clearBoard();
+    //    }
+    //    else {
+    //        Debug.Log("No map found to clear");
+    //    }
 
 
 
        
-        //generate tiles
-        Width = int.Parse(contentArray[0].Replace("width=", ""));
-        Height = int.Parse(contentArray[1].Replace("height=", ""));   
-        tiles = new Tile[Width, Height];
-        //the first 2 positions are reserved for the Width and Height.
-        int i = 2;  
+    //    //generate tiles
+    //    Width = int.Parse(contentArray[0].Replace("width=", ""));
+    //    Height = int.Parse(contentArray[1].Replace("height=", ""));   
+    //    tiles = new Tile[Width, Height];
+    //    //the first 2 positions are reserved for the Width and Height.
+    //    int i = 2;  
         
-        for (int x = 0; x < width; x++)
-        {
-            for (int y = 0; y < height; y++)
-            {
+    //    for (int x = 0; x < width; x++)
+    //    {
+    //        for (int y = 0; y < height; y++)
+    //        {
 
-                tiles[x, y] = new Tile(x, y, (Tile.TileType)System.Enum.Parse(typeof(Tile.TileType), contentArray[i++]),Tile.TileState.Neutral );//Better Storage needed. Tilestate. not stored
-                tiles[x, y].getGoTile().transform.SetParent(GameObject.Find("go_Board").transform, true);//make all the tiles a "Parent of go_Bord in the unity Hierarchy"
-            }
-        }
-
-
+    //            tiles[x, y] = new Tile(x, y, (Tile.TileType)System.Enum.Parse(typeof(Tile.TileType), contentArray[i++]),Tile.TileState.Neutral );//Better Storage needed. Tilestate. not stored
+    //            tiles[x, y].getGoTile().transform.SetParent(GameObject.Find("go_Board").transform, true);//make all the tiles a "Parent of go_Bord in the unity Hierarchy"
+    //        }
+    //    }
 
 
 
-    }//load Board End
+
+
+    //}//load Board End
 
 
     

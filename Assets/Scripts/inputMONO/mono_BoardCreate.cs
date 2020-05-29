@@ -66,11 +66,11 @@ public class mono_BoardCreate : MonoBehaviour {
         Debug.Log("Saving map...");
         map.saveBoard();
     }
-    public void loadMap()
-    {
-        Debug.Log("Loading map...");
-        map.loadBoard();
-    }
+    //public void loadMap()
+    //{
+    //    Debug.Log("Loading map...");
+    //    map.loadBoard();
+    //}
 
     public void setName(string arg)
     {       
