@@ -45,17 +45,19 @@ public class Mouse : MonoBehaviour , IPointerClickHandler{
             Ray ray = cam.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
 
-            if (Physics.Raycast(ray, out hit))
-            {
-                currFramepos = hit.point;
-            }
+            //if (Physics.Raycast(ray, out hit))
+            //{
+            //    currFramepos = hit.point;
+            //}
+            Physics.Raycast(ray, out hit);
+            currFramepos = hit.point;
+            //////////Debug.Log("Raycast hit"+hit.point);
         }
 
 
         
         currFramepos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        //camera mouvment by dragging
-        dragCamera(currFramepos);
+
         //create Selection effect on the boarder of the tile that is clicked
         createSelectionVFX(currFramepos);
         //Update Text Labales and sutff
@@ -66,7 +68,7 @@ public class Mouse : MonoBehaviour , IPointerClickHandler{
 
         //Point (x,y) of mouse
         x = currFramepos.x;
-        y = currFramepos.y;
+        y = currFramepos.z;
 
     }//update end
 
@@ -231,18 +233,7 @@ public class Mouse : MonoBehaviour , IPointerClickHandler{
 
 
 
-    Vector3 lastFramePos;
-    Vector3 diff;
-    void dragCamera(Vector3 currFramepos) {
 
-        if (Input.GetMouseButton(1))
-        {
-            diff = lastFramePos - currFramepos;
-            Camera.main.transform.Translate(diff);
-        }
-        lastFramePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-
-    }//end dragCamera();
 
 
 
