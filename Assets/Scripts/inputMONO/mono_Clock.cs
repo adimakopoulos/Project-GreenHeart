@@ -20,11 +20,6 @@ public class mono_Clock : MonoBehaviour
     }
 
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
 
     public void startClock()
     {

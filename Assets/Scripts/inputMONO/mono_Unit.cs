@@ -24,11 +24,15 @@ public class mono_Unit : MonoBehaviour
     void Update()
     {
         //if the unit is dead Disable movement
-        if (unitData != null && unitData.health > 0) { 
-        //check if the tile has been ordered to move units
-        moveOrder();
-        startMoving();
-        idleMovement();
+        if (unitData != null && unitData.health > 0) {
+            //check if the tile has been ordered to move units
+            moveOrder();
+            startMoving();
+            idleMovement();
+        } 
+        else if (unitData != null && unitData.health <= 0){
+        
+            killUnit();
         }
     }
      
@@ -43,12 +47,7 @@ public class mono_Unit : MonoBehaviour
         Tile tile = data.getCurrentTile();
 
         gameObject.GetComponent<Renderer>().material.color = tile.Owner.PlayerColor;//color the unit
-
-        //Spawn unit in a random posiotion inside a tile
-        gameObject.transform.SetParent(tile.getGoTile().transform, false);
-        gameObject.transform.position = new Vector3(Random.Range(0f, 0.9f) + tile.GamePosition.x,0, Random.Range(0f, 0.9f) + tile.GamePosition.z);
-  
-     
+    
 
     }
 
@@ -173,8 +172,9 @@ public class mono_Unit : MonoBehaviour
                 //every 4 seconds, move !
                 if (idleMoveTimer < 0)
                 {
-                    //randLocalPos.Y should be lower than 1 so unit does not apear outside of the tiles boarders
-                    randLocalPos = new Vector3(Random.Range(0f, 0.9f), 0, Random.Range(0f, 0.9f));
+                    
+                    //Isolate between -0.5 and 0.5 witch is the center of the tile. The tile has 1 as diamiter  
+                    randLocalPos = new Vector3(Random.Range(-0.5f, 0.5f), 1 , Random.Range(-0.5f, 0.5f));
                     
                     idleMoveTimer = 4.0f;
 

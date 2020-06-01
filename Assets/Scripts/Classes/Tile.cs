@@ -4,21 +4,35 @@ using UnityEngine;
 
 public class Tile {
 
-    //Data
+    //Enums Data driven states of the tile
     public enum TileType { Empty, Grass, Rock, Water, Castle };
     public enum TileState { Neutral, Claimed, Besieged };
     public enum TileMovementDirection { Up, Down, Left, Right, Center };
     private TileType type = TileType.Empty;
     private TileState state = TileState.Neutral;
     private TileMovementDirection moveDirection = TileMovementDirection.Center;
-    private Vector3Int gamePosition;
 
+    //Game positions
+    private readonly int x,z;
+    private readonly float tileGraphicsHeight = 0.1f;//make it so units spawn on top of the tile  
+    private Vector3Int gamePosition;//maybe this is a bit redutant?(because we already have gameObject.transfor witcht already holds the same information)
+
+    //Gameplay Variablas
+    private Building building;
     GameObject go_Tile;
     Player owner = mono_PlayerManager.p0; //neutral player as an owner
     float spawnRate = 2.0f;
     public int unitMax = 10;
-    public ArrayList units = new ArrayList();
-    Vfx dirVfx;
+
+
+
+    //after researching i found that Lists should be used here. doesnt matter if theoreticly this is a dyniamic collection. 
+    //Also we have to take to considaration that leaving this uncaped might crash peoples hardware.
+    // Creating a list with an initial size
+    public List<Unit> units = new List<Unit>(1000);
+    //public ArrayList units = new ArrayList(); 
+    Vfx dirVfx;//depricated     //______________________TODO FIX VFX___________________________
+
     public float capturePoints = 0;
 
 
@@ -30,13 +44,14 @@ public class Tile {
 
 
     public Tile(Vector3Int Location, TileType type = TileType.Grass, TileState state= TileState.Neutral) {
-        this.gamePosition = Location;
+        this.x = Location.x;
+        this.z = Location.z;
         this.State = state;
         
-      
+        //SET game object
         go_Tile = GameObject.Instantiate(Resources.Load("PreFabs/PreTile", typeof(GameObject))) as GameObject;
-        go_Tile.name = "Tile = X:" + gamePosition;
-        go_Tile.transform.position = gamePosition;
+        go_Tile.name = "Tile = X,Z:  (" + x + "," + z+")";
+        go_Tile.transform.position = Location;
         setTileType(type);
 
 
@@ -47,8 +62,9 @@ public class Tile {
 
 
     public void setTileType(TileType type) {
+        //update data and visauls
         this.Type = type;
-        setSprite(type, go_Tile);
+        setMaterial(type, go_Tile);
     }
 
 
@@ -71,25 +87,26 @@ public class Tile {
 
 
     //hook up the Materials with the game objectes()
-    private void setSprite(TileType type, GameObject go) {
-
+    private void setMaterial(TileType type, GameObject go) {
+        string matPath = "Materials/Terrain/";
         if (Tile.TileType.Grass == type)
         {            
-            go.GetComponent<Renderer>().material = Resources.Load("Materials/MatGrass", typeof(Material)) as Material;
+            go.GetComponent<Renderer>().material = Resources.Load(matPath+"MatGrass", typeof(Material)) as Material;
         }
         else if (Tile.TileType.Rock == type)
         {
-            go.GetComponent<Renderer>().material = Resources.Load("Materials/MatRock", typeof(Material)) as Material;
+            go.GetComponent<Renderer>().material = Resources.Load(matPath + "MatRock", typeof(Material)) as Material;
         }
         else if (Tile.TileType.Water == type)
         {
-            go.GetComponent<Renderer>().material = Resources.Load("Materials/MatWater", typeof(Material)) as Material;
+            go.GetComponent<Renderer>().material = Resources.Load(matPath + "MatWater", typeof(Material)) as Material;
         }
 
         else if (Tile.TileType.Empty == type)
         {
 
-            go.GetComponent<Renderer>().material = null;
+            go.GetComponent<Renderer>().material  = Resources.Load(matPath + "MatEmpty", typeof(Material)) as Material;
+
         }
 
         else if (Tile.TileType.Castle == type)
@@ -145,20 +162,22 @@ public class Tile {
         }
     }
 
+
+    //______________________TODO FIX VFX___________________________
     public void setVfxInitialSpr() {
 
         if (this.dirVfx == null)
         {
-            dirVfx = new Vfx(this.GamePosition.x, this.GamePosition.y, Vfx.tileVfx.Center);//When  a new owner gets ownership of tile the direction of tile should be center
+            //dirVfx = new Vfx(this.GamePosition.x, this.GamePosition.y, Vfx.tileVfx.Center);//When  a new owner gets ownership of tile the direction of tile should be center
         }
         else
         {
-            dirVfx.setVfxSpr(Vfx.tileVfx.Center);//change the indication of the movement direction for units
+            //dirVfx.setVfxSpr(Vfx.tileVfx.Center);//change the indication of the movement direction for units
         }
     }
 
 
-
+    //______________________TODO FIX VFX___________________________
     public TileMovementDirection MoveDirection
     { 
         get => moveDirection;
@@ -166,7 +185,7 @@ public class Tile {
         set {
             // since TileMovementDirection is a subset of Vfx.tileVfx (enums) we can safly cast it 
             moveDirection = value;
-            dirVfx.setVfxSpr((Vfx.tileVfx)moveDirection);
+            //dirVfx.setVfxSpr((Vfx.tileVfx)moveDirection);
         } 
     }
     public TileState State {
@@ -191,6 +210,12 @@ public class Tile {
 
     }
     public Vector3Int GamePosition { get => gamePosition; set => gamePosition = value; }
+
+    public int X => x;
+
+    public int Z => z;
+
+    public float TileGraphicsHeight => tileGraphicsHeight;
 
     public void clearUnits (){
         units.Clear();

@@ -26,12 +26,13 @@ public class Unit {
         CurrentTile = tile;
         TargetTile = tile;
         go_Unit = GameObject.Instantiate(Resources.Load("PreFabs/PreUnit", typeof(GameObject))) as GameObject;
+        go_Unit.name = player.Name;
 
 
         //Spawn unit in a random posiotion inside a tile
-        go_Unit.transform.SetParent(tile.getGoTile().transform, false);
-        go_Unit.transform.position = new Vector3(Random.Range(0f, 0.9f) + tile.GamePosition.x, 5, Random.Range(0f, 0.9f) + tile.GamePosition.z);
-
+        
+        go_Unit.transform.position = new Vector3( tile.X, tile.TileGraphicsHeight,  tile.Z);
+        go_Unit.transform.SetParent(tile.getGoTile().transform, true);
 
         go_Unit.AddComponent<mono_Unit>().setUnitData(this);
        

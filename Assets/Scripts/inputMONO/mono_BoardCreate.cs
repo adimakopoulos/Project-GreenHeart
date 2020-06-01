@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public class mono_BoardCreate : MonoBehaviour {
 
     public static Board map;
@@ -23,13 +24,14 @@ public class mono_BoardCreate : MonoBehaviour {
         map.getTileFromMap(0+1, 0+1).Owner = mono_PlayerManager.p1;
         map.getTileFromMap(0 + 3, 0 + 1).Owner = mono_PlayerManager.p2;
         map.getTileFromMap(width - 2, height - 2).Owner = mono_PlayerManager.p2;
+        map.getTileFromMap(0, 0).setTileType(Tile.TileType.Empty);
 
         map.getTileFromMap(width-1, height-1).Owner = mono_PlayerManager.p2;
         map.getTileFromMap(0, height - 1).Owner = mono_PlayerManager.p3;
     }
 
 
-    //Game Rule (mechanic) A tile can only support its max Units. After that, the Current units on the tile will Start to attrition lossing 1 unit per seccond
+    //Game Rule (mechanic) A tile can only support its max Units. After that, the Current(ally) units on the tile will Start to attrition lossing 1 unit per seccond
     int currentUnits, maxUnits;
     public void killExtraUnits()
     {
@@ -43,7 +45,7 @@ public class mono_BoardCreate : MonoBehaviour {
                 {
                     Unit temp =(Unit) map.getTileFromMap(x, y).units[currentUnits - 1]; //get last unit
                     map.getTileFromMap(x, y).units.RemoveAt(currentUnits - 1);          //remove it from tiles list
-                    temp.Go_Unit.GetComponent<mono_Unit>().killUnit();                  //Destroy game object
+                    temp.Go_Unit.GetComponent<mono_Unit>().killUnit();                  //Destroy unit game object
                    
                     //Debug.Log("kill unit" + map.getTileFromMap(x, y));
 

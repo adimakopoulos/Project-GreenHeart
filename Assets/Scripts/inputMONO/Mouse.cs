@@ -6,6 +6,8 @@ using UnityEngine.UI;
 
 public class Mouse : MonoBehaviour , IPointerClickHandler{
     
+
+    //UI variables
     public GameObject txtOwner;
     public GameObject txtTerainType;
     public GameObject txtUnitsInTile;
@@ -30,12 +32,27 @@ public class Mouse : MonoBehaviour , IPointerClickHandler{
 
 
     // Update is called once per frame
-    
 
+
+
+    public Camera cam;
+    Vector3 currFramepos ;
     void Update () {
 
+        if (Input.GetMouseButtonDown(0))
+        {
 
-        Vector3 currFramepos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            Ray ray = cam.ScreenPointToRay(Input.mousePosition);
+            RaycastHit hit;
+
+            if (Physics.Raycast(ray, out hit))
+            {
+                currFramepos = hit.point;
+            }
+        }
+
+
+        
         currFramepos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         //camera mouvment by dragging
         dragCamera(currFramepos);
@@ -148,7 +165,7 @@ public class Mouse : MonoBehaviour , IPointerClickHandler{
             //this switch checkes if tiles point at each other 
             switch (intendedDir)
             {
-                case Tile.TileMovementDirection.Up: if (_nTile.MoveDirection != Tile.TileMovementDirection.Down) { result = true; } break;//i dont think i need to break here cause i am already returning
+                case Tile.TileMovementDirection.Up: if (_nTile.MoveDirection != Tile.TileMovementDirection.Down) { result = true; } break;
                 case Tile.TileMovementDirection.Down: if (_nTile.MoveDirection != Tile.TileMovementDirection.Up) { result = true; } break;
                 case Tile.TileMovementDirection.Left: if (_nTile.MoveDirection != Tile.TileMovementDirection.Right) { result = true; } break;
                 case Tile.TileMovementDirection.Right: if (_nTile.MoveDirection != Tile.TileMovementDirection.Left) { result = true; } break;
@@ -165,6 +182,8 @@ public class Mouse : MonoBehaviour , IPointerClickHandler{
     }
 
 
+
+    //______________________TODO FIX VFX___________________________
     Vfx selected_last;
     void createSelectionVFX(Vector3 currFramepos) {
         //click on map , create effect on selected Tile(on mouseButtonUp)
@@ -179,11 +198,11 @@ public class Mouse : MonoBehaviour , IPointerClickHandler{
                 //destroy selection vfx at last location(because you can only select 1)
                 if (selected_last != null)
                 {
-                    Destroy(selected_last.getGoVFX());
+                    //Destroy(selected_last.getGoVFX());    //______________________TODO FIX VFX___________________________
                     //Debug.Log("GO destroyed");
                 }
                 //create new selection vfx
-                selected_last = new Vfx(tile.GamePosition.x, tile.GamePosition.y, Vfx.tileVfx.Select);
+                //selected_last = new Vfx(tile.GamePosition.x, tile.GamePosition.y, Vfx.tileVfx.Select);            //______________________TODO FIX VFX___________________________
 
 
             }
