@@ -22,6 +22,10 @@
 # Remove LeanTween 
 /Assets/LeanTween
 
+# Remove TextMesh 
+/Assets/TextMesh Pro
+
+
 # Visual Studio cache directory
 .vs/
 
