@@ -74,13 +74,13 @@ public  class Board  {
         }
     }
 
-    public Tile getTileFromMap(Vector3 mousePosition) {
+    public Tile getTileFromMap(Vector3 clickHit) {
 
 
-        int x = Mathf.FloorToInt(mousePosition.x);
-        int y = Mathf.FloorToInt(mousePosition.y);
+        int x = Mathf.FloorToInt(clickHit.x);
+        int z = Mathf.FloorToInt(clickHit.z);
         //Check to see if the player clicks outside of the map.
-        if ( x > Width -1 || x < 0 || y >Height -1 || y <0)
+        if ( x > Width -1 || x < 0 || z >Height -1 || z <0)
         {
             //Debug.Log("No tile here. Out of bounds: " + x + ", " + y+ "Board Width: " + this.Width + ",Height " + this.Height);
            
@@ -88,7 +88,7 @@ public  class Board  {
         }
 
         //Debug.Log("you clicked" + x+","+ y);
-        return tiles[x, y];
+        return tiles[x, z];
 
 
     }

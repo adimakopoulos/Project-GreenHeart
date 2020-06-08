@@ -25,6 +25,8 @@ public class Camera_Controller : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+
+        //init with current 
         targetPos = transform.position;
         targetRotation = transform.rotation;
         targetZoom = camTranform.localPosition;

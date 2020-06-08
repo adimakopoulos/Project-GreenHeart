@@ -4,8 +4,9 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class Mouse : MonoBehaviour , IPointerClickHandler{
-    
+public class Mouse : MonoBehaviour
+{
+
 
     //UI variables
     public GameObject txtOwner;
@@ -17,45 +18,19 @@ public class Mouse : MonoBehaviour , IPointerClickHandler{
     private Player player1 = mono_PlayerManager.p1;
 
 
-
-
-    public virtual void OnPointerClick(PointerEventData eventData)
-    {
-
-        Debug.Log("assss asss" + eventData.button);
-        if (eventData.clickCount >= 2)
-        {
-            Debug.Log("double click");
-        }
-    }
-
-
-
-    // Update is called once per frame
-
-
+    Tile firstTile = null, _neighborTile = null;
 
     public Camera cam;
-    Vector3 currFramepos ;
-    void Update () {
-
-        if (Input.GetMouseButtonDown(0))
-        {
-
-            Ray ray = cam.ScreenPointToRay(Input.mousePosition);
-            RaycastHit hit;
-
-            //if (Physics.Raycast(ray, out hit))
-            //{
-            //    currFramepos = hit.point;
-            //}
-            Physics.Raycast(ray, out hit);
-            currFramepos = hit.point;
-            //////////Debug.Log("Raycast hit"+hit.point);
-        }
+    Vector3 currFramepos;
+    Vector3 hit;
+    void Update()
+    {
 
 
-        
+        //check if cursor has clicked a tile
+        tileIsClicked();
+
+
         currFramepos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
         //create Selection effect on the boarder of the tile that is clicked
@@ -72,24 +47,53 @@ public class Mouse : MonoBehaviour , IPointerClickHandler{
 
     }//update end
 
+
+
+
+    void tileIsClicked()
+    {
+        if (Input.GetMouseButtonUp(0))
+        {
+
+
+
+            Plane plane = new Plane(Vector3.up, Vector3.zero);
+
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+            float point;
+            if (plane.Raycast(ray, out point))
+            {
+                hit = ray.GetPoint(point);
+            }
+            
+
+        }
+        firstTile = mono_BoardCreate.map.getTileFromMap(hit);
+        Debug.Log(firstTile.X + firstTile.Z);
+    }
+
     //firstTile= the first tile that is click
-    Tile firstTile = null, _neighborTile = null;
-    void moveUnits(Vector3 currFramepos) {
-        
+
+    void moveUnits(Vector3 currFramepos)
+    {
+
         //this is essentiallu a function that detects mouse draging behavior;
-        if (Input.GetMouseButtonDown(0)) {
+        if (Input.GetMouseButtonDown(0))
+        {
             //first tile clicked
             //Also we must check ownership
             //if (mono_BoardCreate.map.getTileFromMap(currFramepos).Owner == player1) {
-                firstTile = mono_BoardCreate.map.getTileFromMap(currFramepos);
-                //this thorws null Exception.
+            firstTile = mono_BoardCreate.map.getTileFromMap(currFramepos);
+            //this thorws null Exception.
             //}
-            
+
 
         }
 
         //If i am not the owner of the tile , the firstTile Var will remain Null and the logic will not trigger
-        if (Input.GetMouseButtonUp(0) && firstTile != null) {
+        if (Input.GetMouseButtonUp(0) && firstTile != null)
+        {
 
             //lastTile = GameObject.FindObjectOfType<mono_BoardCreate>().getBoard().getTileFromMap(Camera.main.ScreenToWorldPoint(Input.mousePosition)); 
 
@@ -101,7 +105,7 @@ public class Mouse : MonoBehaviour , IPointerClickHandler{
             int ftz = firstTile.GamePosition.z;
             if (ftx > Mathf.FloorToInt(currFramepos.x))
             {
-                _neighborTile= mono_BoardCreate.map.getTileFromMap(ftx - 1, ftz); //get the neighboring tile that is x-1;
+                _neighborTile = mono_BoardCreate.map.getTileFromMap(ftx - 1, ftz); //get the neighboring tile that is x-1;
                 isCooltoMove = checkMoveValidity(firstTile, _neighborTile, Tile.TileMovementDirection.Left);
                 if (isCooltoMove) { firstTile.MoveDirection = Tile.TileMovementDirection.Left; }
 
@@ -110,22 +114,22 @@ public class Mouse : MonoBehaviour , IPointerClickHandler{
             {
                 _neighborTile = mono_BoardCreate.map.getTileFromMap(ftx + 1, ftz);
                 isCooltoMove = checkMoveValidity(firstTile, _neighborTile, Tile.TileMovementDirection.Right);
-                if (isCooltoMove) { firstTile.MoveDirection = Tile.TileMovementDirection.Right;}
+                if (isCooltoMove) { firstTile.MoveDirection = Tile.TileMovementDirection.Right; }
 
             }//right
             if (firstTile.GamePosition.y > Mathf.FloorToInt(currFramepos.y))
             {
-                _neighborTile = mono_BoardCreate.map.getTileFromMap(ftx, ftz-1);
+                _neighborTile = mono_BoardCreate.map.getTileFromMap(ftx, ftz - 1);
                 isCooltoMove = checkMoveValidity(firstTile, _neighborTile, Tile.TileMovementDirection.Down);
-                if (isCooltoMove) { firstTile.MoveDirection = Tile.TileMovementDirection.Down;}
+                if (isCooltoMove) { firstTile.MoveDirection = Tile.TileMovementDirection.Down; }
 
             }//down
             if (firstTile.GamePosition.y < Mathf.FloorToInt(currFramepos.y))
             {
-                _neighborTile = mono_BoardCreate.map.getTileFromMap(ftx, ftz+1);
+                _neighborTile = mono_BoardCreate.map.getTileFromMap(ftx, ftz + 1);
                 isCooltoMove = checkMoveValidity(firstTile, _neighborTile, Tile.TileMovementDirection.Up);
                 if (isCooltoMove) { firstTile.MoveDirection = Tile.TileMovementDirection.Up; }
-               
+
 
 
             }//up
@@ -134,14 +138,14 @@ public class Mouse : MonoBehaviour , IPointerClickHandler{
 
 
 
-            firstTile = null;  
-        
+            firstTile = null;
+
         }
 
     }
     private bool checkMoveValidity(Tile _originalTile, Tile _nTile, Tile.TileMovementDirection intendedDir)
     {
-        bool result= false;
+        bool result = false;
         if (_originalTile == null || _nTile == null)
         {
             return false;
@@ -153,7 +157,7 @@ public class Mouse : MonoBehaviour , IPointerClickHandler{
             //I sould be able to invade an Enemy Tile
             if (_originalTile.Owner != _nTile.Owner)
             {
-                return  true;
+                return true;
             }
 
             //I sould be able to set my direction to neighboing tiles that DOES NOT have a TileMovementDirection
@@ -187,7 +191,8 @@ public class Mouse : MonoBehaviour , IPointerClickHandler{
 
     //______________________TODO FIX VFX___________________________
     Vfx selected_last;
-    void createSelectionVFX(Vector3 currFramepos) {
+    void createSelectionVFX(Vector3 currFramepos)
+    {
         //click on map , create effect on selected Tile(on mouseButtonUp)
         if (Input.GetMouseButtonUp(0))
         {
@@ -220,13 +225,13 @@ public class Mouse : MonoBehaviour , IPointerClickHandler{
         //Update UI Camera.main.ScreenPointToRay(Input.mousePosition);
         //Tile tile = GameObject.FindObjectOfType<mono_BoardCreate>().getBoard().getTileFromMap(Camera.main.ScreenToWorldPoint(Input.mousePosition));
         Tile tile = mono_BoardCreate.map.getTileFromMap(currFramepos);//a bit cleaner 
-        if (Input.GetMouseButtonUp(0))                                                        
+        if (Input.GetMouseButtonUp(0))
         {
             if (tile != null)
             {
                 txtOwner.GetComponent<Text>().text = tile.Owner.Name;
                 txtTerainType.GetComponent<Text>().text = tile.Type.ToString();
-                txtUnitsInTile.GetComponent<Text>().text = "Units in Tile:"+tile.getUnitsInTile().ToString()+" State: "+tile.State.ToString();
+                txtUnitsInTile.GetComponent<Text>().text = "Units in Tile:" + tile.getUnitsInTile().ToString() + " State: " + tile.State.ToString();
             }
         }
     }

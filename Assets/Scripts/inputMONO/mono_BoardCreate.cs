@@ -16,22 +16,30 @@ public class mono_BoardCreate : MonoBehaviour {
     {
         
         map = new Board(width, height);
-        InvokeRepeating("killExtraUnits",0,0.25f);
+        startGame();
+
+
+    }
+
+    void startGame() {
+
+        InvokeRepeating("killExtraUnits", 0, 0.25f);
 
 
         //hard coded stuf for testing 
-        map.getTileFromMap(0,0).Owner = mono_PlayerManager.p1;
-        map.getTileFromMap(0+1, 0+1).Owner = mono_PlayerManager.p1;
+        map.getTileFromMap(0, 0).Owner = mono_PlayerManager.p1;
+        map.getTileFromMap(0 + 1, 0 + 1).Owner = mono_PlayerManager.p1;
         map.getTileFromMap(0 + 3, 0 + 1).Owner = mono_PlayerManager.p2;
         map.getTileFromMap(width - 2, height - 2).Owner = mono_PlayerManager.p2;
         map.getTileFromMap(0, 0).setTileType(Tile.TileType.Empty);
 
-        map.getTileFromMap(width-1, height-1).Owner = mono_PlayerManager.p2;
+        map.getTileFromMap(width - 1, height - 1).Owner = mono_PlayerManager.p2;
         map.getTileFromMap(0, height - 1).Owner = mono_PlayerManager.p3;
     }
 
 
     //Game Rule (mechanic) A tile can only support its max Units. After that, the Current(ally) units on the tile will Start to attrition lossing 1 unit per seccond
+    //this has 0 references 
     int currentUnits, maxUnits;
     public void killExtraUnits()
     {

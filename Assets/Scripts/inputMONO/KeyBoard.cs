@@ -41,20 +41,11 @@ public class KeyBoard : MonoBehaviour {
 
 
     public void deActivateUI() {
-        //dissable UI 
-        refButtonSave.SetActive(false);
-        refButtonLoad.SetActive(false);
-        refTextFieldSaveFile.SetActive(false);
-        scrllPannel.SetActive(false);
+
 
     }
     public void activateUI()
     {
-        //dissable UI 
-        refButtonSave.SetActive(true);
-        refButtonLoad.SetActive(true);
-        refTextFieldSaveFile.SetActive(true);
-        scrllPannel.SetActive(true);
 
     }
 
