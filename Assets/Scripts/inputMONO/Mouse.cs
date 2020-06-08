@@ -9,53 +9,76 @@ public class Mouse : MonoBehaviour
 
 
     //UI variables
-    public GameObject txtOwner;
-    public GameObject txtTerainType;
-    public GameObject txtUnitsInTile;
-    //Debugging Var. Just to keep track of mouse x and Y(ScreenToWorldPoint)
-    [SerializeField] float x, y;
+    public GameObject tilePanel;
+
     //Only player 1 shoyuld have controll of the mouse
     private Player player1 = mono_PlayerManager.p1;
 
 
-    Tile firstTile = null, _neighborTile = null;
+    Tile selectedTile;
 
-    public Camera cam;
-    Vector3 currFramepos;
-    Vector3 hit;
+    Vector3 hit, hitUp, hitDown;        //where the player clicks in world position (after ray hit)
     void Update()
     {
+        setSelectedTile();
 
-
-        //check if cursor has clicked a tile
-        tileIsClicked();
-
-
-        currFramepos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-
-        //create Selection effect on the boarder of the tile that is clicked
-        createSelectionVFX(currFramepos);
+        //TODO create Selection effect on the boarder of the tile that is clicked
         //Update Text Labales and sutff
-        updateUI(currFramepos);
-        //Tell tile to tell units that the they need to move
-        moveUnits(currFramepos);
+
+        //Tell tile to tell units that the they need to move, set tile direction
+        setTileDir();
 
 
-        //Point (x,y) of mouse
-        x = currFramepos.x;
-        y = currFramepos.z;
 
     }//update end
 
 
 
-
-    void tileIsClicked()
+    void setSelectedTile()
     {
         if (Input.GetMouseButtonUp(0))
         {
+            Plane plane = new Plane(Vector3.up, 0f);
+
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+            float point;
+            if (plane.Raycast(ray, out point))
+            {
+                hitUp = ray.GetPoint(point);
+            }
+
+            selectedTile = mono_BoardCreate.map.getTileFromMap(hitUp);
+            updateUI();
+            //Debug.Log("selectedTile: "+selectedTile.X +","+ selectedTile.Z);
+
+        }
+    }
+    void updateUI()
+    {
+        //tell panel to update the texts because the player pressed a tile
+        if (selectedTile != null)
+        {
+            tilePanel.GetComponent<TilePanelCs>().updateLabels(selectedTile);
+        }
+    }
 
 
+
+
+    //firstTile= the first tile that is click
+
+
+    Tile firstTile = null, _neighborTile = null;
+    void setTileDir()
+    {
+
+        //Handl players draging 
+
+        //first tile clicked
+        //Also we must check ownership
+        if (Input.GetMouseButtonDown(0))
+        {
 
             Plane plane = new Plane(Vector3.up, Vector3.zero);
 
@@ -64,32 +87,16 @@ public class Mouse : MonoBehaviour
             float point;
             if (plane.Raycast(ray, out point))
             {
-                hit = ray.GetPoint(point);
+                hitDown = ray.GetPoint(point);
             }
-            
-
+            //check if player hit outside of map
+            if (mono_BoardCreate.map.getTileFromMap(hitDown) != null && mono_BoardCreate.map.getTileFromMap(hitDown).Owner == player1 )
+            {
+                firstTile = mono_BoardCreate.map.getTileFromMap(hitDown);
+                
+            }
         }
-        firstTile = mono_BoardCreate.map.getTileFromMap(hit);
-        Debug.Log(firstTile.X + firstTile.Z);
-    }
 
-    //firstTile= the first tile that is click
-
-    void moveUnits(Vector3 currFramepos)
-    {
-
-        //this is essentiallu a function that detects mouse draging behavior;
-        if (Input.GetMouseButtonDown(0))
-        {
-            //first tile clicked
-            //Also we must check ownership
-            //if (mono_BoardCreate.map.getTileFromMap(currFramepos).Owner == player1) {
-            firstTile = mono_BoardCreate.map.getTileFromMap(currFramepos);
-            //this thorws null Exception.
-            //}
-
-
-        }
 
         //If i am not the owner of the tile , the firstTile Var will remain Null and the logic will not trigger
         if (Input.GetMouseButtonUp(0) && firstTile != null)
@@ -103,28 +110,28 @@ public class Mouse : MonoBehaviour
             bool isCooltoMove;
             int ftx = firstTile.GamePosition.x;
             int ftz = firstTile.GamePosition.z;
-            if (ftx > Mathf.FloorToInt(currFramepos.x))
+            if (ftx > Mathf.FloorToInt(hit.x))
             {
                 _neighborTile = mono_BoardCreate.map.getTileFromMap(ftx - 1, ftz); //get the neighboring tile that is x-1;
                 isCooltoMove = checkMoveValidity(firstTile, _neighborTile, Tile.TileMovementDirection.Left);
                 if (isCooltoMove) { firstTile.MoveDirection = Tile.TileMovementDirection.Left; }
 
             }//left
-            if (ftx < Mathf.FloorToInt(currFramepos.x))
+            if (ftx < Mathf.FloorToInt(hit.x))
             {
                 _neighborTile = mono_BoardCreate.map.getTileFromMap(ftx + 1, ftz);
                 isCooltoMove = checkMoveValidity(firstTile, _neighborTile, Tile.TileMovementDirection.Right);
                 if (isCooltoMove) { firstTile.MoveDirection = Tile.TileMovementDirection.Right; }
 
             }//right
-            if (firstTile.GamePosition.y > Mathf.FloorToInt(currFramepos.y))
+            if (firstTile.GamePosition.y > Mathf.FloorToInt(hit.z))
             {
                 _neighborTile = mono_BoardCreate.map.getTileFromMap(ftx, ftz - 1);
                 isCooltoMove = checkMoveValidity(firstTile, _neighborTile, Tile.TileMovementDirection.Down);
                 if (isCooltoMove) { firstTile.MoveDirection = Tile.TileMovementDirection.Down; }
 
             }//down
-            if (firstTile.GamePosition.y < Mathf.FloorToInt(currFramepos.y))
+            if (firstTile.GamePosition.y < Mathf.FloorToInt(hit.z))
             {
                 _neighborTile = mono_BoardCreate.map.getTileFromMap(ftx, ftz + 1);
                 isCooltoMove = checkMoveValidity(firstTile, _neighborTile, Tile.TileMovementDirection.Up);
@@ -190,59 +197,6 @@ public class Mouse : MonoBehaviour
 
 
     //______________________TODO FIX VFX___________________________
-    Vfx selected_last;
-    void createSelectionVFX(Vector3 currFramepos)
-    {
-        //click on map , create effect on selected Tile(on mouseButtonUp)
-        if (Input.GetMouseButtonUp(0))
-        {
-            //this is a bit redundant 
-            //Tile tile = GameObject.FindObjectOfType<mono_BoardCreate>().getBoard().getTileFromMap(Camera.main.ScreenToWorldPoint(Input.mousePosition));         
-            Tile tile = mono_BoardCreate.map.getTileFromMap(currFramepos);
-
-            if (tile != null)
-            {
-                //destroy selection vfx at last location(because you can only select 1)
-                if (selected_last != null)
-                {
-                    //Destroy(selected_last.getGoVFX());    //______________________TODO FIX VFX___________________________
-                    //Debug.Log("GO destroyed");
-                }
-                //create new selection vfx
-                //selected_last = new Vfx(tile.GamePosition.x, tile.GamePosition.y, Vfx.tileVfx.Select);            //______________________TODO FIX VFX___________________________
-
-
-            }
-
-        }
-
-    }//end of createSelectionVFX
-
-
-
-    void updateUI(Vector3 currFramepos)
-    {
-        //Update UI Camera.main.ScreenPointToRay(Input.mousePosition);
-        //Tile tile = GameObject.FindObjectOfType<mono_BoardCreate>().getBoard().getTileFromMap(Camera.main.ScreenToWorldPoint(Input.mousePosition));
-        Tile tile = mono_BoardCreate.map.getTileFromMap(currFramepos);//a bit cleaner 
-        if (Input.GetMouseButtonUp(0))
-        {
-            if (tile != null)
-            {
-                txtOwner.GetComponent<Text>().text = tile.Owner.Name;
-                txtTerainType.GetComponent<Text>().text = tile.Type.ToString();
-                txtUnitsInTile.GetComponent<Text>().text = "Units in Tile:" + tile.getUnitsInTile().ToString() + " State: " + tile.State.ToString();
-            }
-        }
-    }
-
-
-
-
-
-
-
-
 
 
 

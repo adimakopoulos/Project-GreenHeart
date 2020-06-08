@@ -97,7 +97,7 @@ public class Camera_Controller : MonoBehaviour
 
     void handleMouseInput() {
         //with arrays dragging is more stable
-        if (Input.GetMouseButtonDown(0)) {
+        if (Input.GetMouseButtonDown(1)) {
 
             Plane plane = new Plane(Vector3.up, Vector3.zero);
 
@@ -109,7 +109,7 @@ public class Camera_Controller : MonoBehaviour
             }
         }
 
-        if (Input.GetMouseButton(0))
+        if (Input.GetMouseButton(1))
         {
 
             Plane plane = new Plane(Vector3.up, Vector3.zero);

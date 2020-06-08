@@ -32,7 +32,7 @@ public  class Board  {
 
         tiles[0, 0].setTileType(Tile.TileType.Castle);
         tiles[Width-1, Height-1].setTileType(Tile.TileType.Castle);
-        Debug.Log("World created with Width: " + this.width + ",Height " + this.height);
+        //Debug.Log("World created with Width: " + this.width + ",Height " + this.height);
     }
 
     public int Width
@@ -74,11 +74,12 @@ public  class Board  {
         }
     }
 
+    float worldOffset = 0.5f;// because the tiles center is offset by 0.5
     public Tile getTileFromMap(Vector3 clickHit) {
 
 
-        int x = Mathf.FloorToInt(clickHit.x);
-        int z = Mathf.FloorToInt(clickHit.z);
+        int x = Mathf.FloorToInt(clickHit.x+ worldOffset);
+        int z = Mathf.FloorToInt(clickHit.z+ worldOffset);
         //Check to see if the player clicks outside of the map.
         if ( x > Width -1 || x < 0 || z >Height -1 || z <0)
         {

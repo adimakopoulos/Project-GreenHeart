@@ -113,7 +113,7 @@ public class Tile {
         {
 
             //go.GetComponent<Renderer>().material = Resources.Load("Materials/MatGrass", typeof(Material)) as Material;
-            Debug.Log("Castelano must be its own Buiing on top of the tile, Good luvk... :-)");
+            //Debug.Log("Castelano must be its own Buiing on top of the tile, Good luvk... :-)");
         }
         else {
             Debug.Log("SPRITE WASN'T FOUND");

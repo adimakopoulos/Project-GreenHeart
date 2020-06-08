@@ -23,7 +23,7 @@
 /Assets/LeanTween
 
 # Remove TextMesh 
-/Assets/TextMesh Pro
+/Assets/TextMesh*Pro
 
 
 # Visual Studio cache directory
