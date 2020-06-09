@@ -6,7 +6,10 @@ using UnityEngine.UI;
 
 public class Mouse : MonoBehaviour
 {
-
+    /*
+     this is where we handle most mouse interaction. i decided to have a script to handle most mouse inputs so 
+     it is eassier to 
+    */
 
     //UI variables
     public GameObject tilePanel;
@@ -14,10 +17,10 @@ public class Mouse : MonoBehaviour
     //Only player 1 shoyuld have controll of the mouse
     private Player player1 = mono_PlayerManager.p1;
 
+    //where the player clicks in world position (after ray hit)
+    Vector3 clickPoint;        
 
     Tile selectedTile;
-
-    Vector3 hit, hitUp, hitDown;        //where the player clicks in world position (after ray hit)
     void Update()
     {
         setSelectedTile();
@@ -34,21 +37,11 @@ public class Mouse : MonoBehaviour
 
 
 
-    void setSelectedTile()
+    void setSelectedTile()//i think This is redudant , maybe delete it?
     {
         if (Input.GetMouseButtonUp(0))
         {
-            Plane plane = new Plane(Vector3.up, 0f);
-
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-
-            float point;
-            if (plane.Raycast(ray, out point))
-            {
-                hitUp = ray.GetPoint(point);
-            }
-
-            selectedTile = mono_BoardCreate.map.getTileFromMap(hitUp);
+            selectedTile = mono_BoardCreate.map.getTileFromMap(doRayCast());
             updateUI();
             //Debug.Log("selectedTile: "+selectedTile.X +","+ selectedTile.Z);
 
@@ -67,33 +60,24 @@ public class Mouse : MonoBehaviour
 
 
     //firstTile= the first tile that is click
-
-
+    //this veriable also works a bit like a boolean for running this code.If it is not set then the code doesnt run
     Tile firstTile = null, _neighborTile = null;
     void setTileDir()
     {
 
-        //Handl players draging 
+        //Handle players draging 
 
         //first tile clicked
         //Also we must check ownership
         if (Input.GetMouseButtonDown(0))
         {
 
-            Plane plane = new Plane(Vector3.up, Vector3.zero);
-
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-
-            float point;
-            if (plane.Raycast(ray, out point))
+            clickPoint= doRayCast();
+            //check if player hit outside of map and if he owns the tile
+            if (mono_BoardCreate.map.getTileFromMap(clickPoint) != null && mono_BoardCreate.map.getTileFromMap(clickPoint).Owner == player1 )
             {
-                hitDown = ray.GetPoint(point);
-            }
-            //check if player hit outside of map
-            if (mono_BoardCreate.map.getTileFromMap(hitDown) != null && mono_BoardCreate.map.getTileFromMap(hitDown).Owner == player1 )
-            {
-                firstTile = mono_BoardCreate.map.getTileFromMap(hitDown);
-                
+                firstTile = mono_BoardCreate.map.getTileFromMap(clickPoint);
+                Debug.Log(firstTile.getGoTile().transform);
             }
         }
 
@@ -102,54 +86,50 @@ public class Mouse : MonoBehaviour
         if (Input.GetMouseButtonUp(0) && firstTile != null)
         {
 
-            //lastTile = GameObject.FindObjectOfType<mono_BoardCreate>().getBoard().getTileFromMap(Camera.main.ScreenToWorldPoint(Input.mousePosition)); 
-
+            clickPoint = doRayCast();
             //Check when mouse is out of the Tile to get the direction the player is dragging. 
             //there are 4 possible outcomes. North-up, South-down, West-left, East-right.
 
             bool isCooltoMove;
             int ftx = firstTile.GamePosition.x;
             int ftz = firstTile.GamePosition.z;
-            if (ftx > Mathf.FloorToInt(hit.x))
+            if (ftx > Mathf.FloorToInt(clickPoint.x))
             {
                 _neighborTile = mono_BoardCreate.map.getTileFromMap(ftx - 1, ftz); //get the neighboring tile that is x-1;
                 isCooltoMove = checkMoveValidity(firstTile, _neighborTile, Tile.TileMovementDirection.Left);
-                if (isCooltoMove) { firstTile.MoveDirection = Tile.TileMovementDirection.Left; }
+                if (isCooltoMove) { firstTile.MoveDirection = Tile.TileMovementDirection.Left;  }
 
             }//left
-            if (ftx < Mathf.FloorToInt(hit.x))
+            if (ftx < Mathf.FloorToInt(clickPoint.x))
             {
                 _neighborTile = mono_BoardCreate.map.getTileFromMap(ftx + 1, ftz);
                 isCooltoMove = checkMoveValidity(firstTile, _neighborTile, Tile.TileMovementDirection.Right);
-                if (isCooltoMove) { firstTile.MoveDirection = Tile.TileMovementDirection.Right; }
+                if (isCooltoMove) { firstTile.MoveDirection = Tile.TileMovementDirection.Right;  }
+
 
             }//right
-            if (firstTile.GamePosition.y > Mathf.FloorToInt(hit.z))
+            if (firstTile.GamePosition.y > Mathf.FloorToInt(clickPoint.z))
             {
                 _neighborTile = mono_BoardCreate.map.getTileFromMap(ftx, ftz - 1);
                 isCooltoMove = checkMoveValidity(firstTile, _neighborTile, Tile.TileMovementDirection.Down);
                 if (isCooltoMove) { firstTile.MoveDirection = Tile.TileMovementDirection.Down; }
-
+                
             }//down
-            if (firstTile.GamePosition.y < Mathf.FloorToInt(hit.z))
+            if (firstTile.GamePosition.y < Mathf.FloorToInt(clickPoint.z))
             {
                 _neighborTile = mono_BoardCreate.map.getTileFromMap(ftx, ftz + 1);
                 isCooltoMove = checkMoveValidity(firstTile, _neighborTile, Tile.TileMovementDirection.Up);
-                if (isCooltoMove) { firstTile.MoveDirection = Tile.TileMovementDirection.Up; }
-
+                if (isCooltoMove) { firstTile.MoveDirection = Tile.TileMovementDirection.Up;  }
+                
 
 
             }//up
-
-
-
-
-
             firstTile = null;
-
         }
 
     }
+
+    //player can not set 2 tiles to point at each other
     private bool checkMoveValidity(Tile _originalTile, Tile _nTile, Tile.TileMovementDirection intendedDir)
     {
         bool result = false;
@@ -195,8 +175,22 @@ public class Mouse : MonoBehaviour
     }
 
 
+    Vector3 doRayCast() {
 
-    //______________________TODO FIX VFX___________________________
+        Vector3 hit= new Vector3(0f,-10f,0f) ;
+
+        Plane plane = new Plane(Vector3.up, Vector3.zero);
+
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+        float distance;
+        if (plane.Raycast(ray, out distance))
+        {
+            hit = ray.GetPoint(distance);
+        }
+        return hit;
+    }
+    
 
 
 

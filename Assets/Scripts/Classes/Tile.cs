@@ -29,7 +29,7 @@ public class Tile {
     //after researching i found that Lists should be used here. doesnt matter if theoreticly this is a dyniamic collection. 
     //Also we have to take to considaration that leaving this uncaped might crash peoples hardware.
     // Creating a list with an initial size
-    public List<Unit> units = new List<Unit>(1000);
+    public List<Unit> units = new List<Unit>(500);
     //public ArrayList units = new ArrayList(); 
     Vfx dirVfx;//depricated     //______________________TODO FIX VFX___________________________
 
