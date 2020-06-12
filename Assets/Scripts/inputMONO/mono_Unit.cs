@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using WorldBuilder;
 
-public class mono_Unit : MonoBehaviour
+public class mono_Unit : CombatChar , IPointerClickHandler
 {    
  
     Unit unitData;
@@ -23,6 +24,7 @@ public class mono_Unit : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+       
         //if the unit is dead Disable movement
         if (unitData != null && unitData.health > 0) {
             //check if the tile has been ordered to move units
@@ -62,15 +64,15 @@ public class mono_Unit : MonoBehaviour
             if (dir != Tile.TileMovementDirection.Center)
             {
                 //set Target tile that unit must start moving 
-                int x = unitData.getCurrentTile().GamePosition.x;
-                int y = unitData.getCurrentTile().GamePosition.y;
+                int x = unitData.getCurrentTile().Vec3Pos.x;
+                int z = unitData.getCurrentTile().Vec3Pos.z;
                 //get the neighboring tiles 
                 switch (dir)
                 {
-                    case Tile.TileMovementDirection.Up: unitData.setTargetTile(mono_BoardCreate.map.getTileFromMap(x, y + 1)); break;
-                    case Tile.TileMovementDirection.Down: unitData.setTargetTile(mono_BoardCreate.map.getTileFromMap(x, y - 1)); break;
-                    case Tile.TileMovementDirection.Left: unitData.setTargetTile(mono_BoardCreate.map.getTileFromMap(x - 1, y)); break;
-                    case Tile.TileMovementDirection.Right: unitData.setTargetTile(mono_BoardCreate.map.getTileFromMap(x + 1, y)); break;
+                    case Tile.TileMovementDirection.Up: unitData.setTargetTile(mono_BoardCreate.map.getTileFromMap(x, z + 1)); break;
+                    case Tile.TileMovementDirection.Down: unitData.setTargetTile(mono_BoardCreate.map.getTileFromMap(x, z - 1)); break;
+                    case Tile.TileMovementDirection.Left: unitData.setTargetTile(mono_BoardCreate.map.getTileFromMap(x - 1, z)); break;
+                    case Tile.TileMovementDirection.Right: unitData.setTargetTile(mono_BoardCreate.map.getTileFromMap(x + 1, z)); break;
                 }
 
 
@@ -94,11 +96,11 @@ public class mono_Unit : MonoBehaviour
             if (unitData.getCurrentTile() != unitData.getTargetTile())
             {
                 //+16pixe to move in the center of the target , not the 0,0 corner
-                float targetX = unitData.getTargetTile().GamePosition.x +0.5f;
-                float targetY = unitData.getTargetTile().GamePosition.y +0.5f;
-                Vector3 destination = new Vector3(targetX, targetY, 0);
-                gameObject.transform.position = Vector3.Lerp(transform.position, destination, unitData.Speed * Time.deltaTime);
-
+                float targetX = unitData.getTargetTile().Vec3Pos.x +0.5f;
+                float targetZ = unitData.getTargetTile().Vec3Pos.z +0.5f;
+                Vector3 destination = new Vector3(targetX, 0, targetZ);
+                //gameObject.transform.position = Vector3.Lerp(transform.position, destination, unitData.Speed * Time.deltaTime);
+                gameObject.transform.localPosition = Vector3.Lerp(transform.localPosition, destination, 0.4f * Time.deltaTime);
                 //set new tile 
                 hasArrived();
 
@@ -112,7 +114,7 @@ public class mono_Unit : MonoBehaviour
     private void hasArrived()
     {
         //check if local gameObject position is out of the bounds of tile. if yes set new tile
-        if (gameObject.transform.localPosition.x < 0f || gameObject.transform.localPosition.y < 0f || gameObject.transform.localPosition.x > 1f || gameObject.transform.localPosition.y > 1f)
+        if (gameObject.transform.localPosition.x < -0.5f || gameObject.transform.localPosition.z < -0.0f || gameObject.transform.localPosition.x > 0.5f || gameObject.transform.localPosition.z > 0.5f)
         {
            
             unitData.getCurrentTile().clearUnits();             //remove units from original tiles list
@@ -139,7 +141,7 @@ public class mono_Unit : MonoBehaviour
 
     private void OnDestroy()
     {
-        //create death animation
+        //create death animation or particles
     }
 
     public void killUnit()

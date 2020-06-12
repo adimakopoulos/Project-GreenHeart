@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using WorldBuilder;
 
 public class mono_BoardCreate : MonoBehaviour {
 
@@ -23,12 +23,14 @@ public class mono_BoardCreate : MonoBehaviour {
 
     void startGame() {
 
+        map.enableTiles();
         InvokeRepeating("killExtraUnits", 0, 0.25f);
 
 
-        //hard coded stuf for testing 
+        //hard coded stuf for testing
         map.getTileFromMap(0, 0).Owner = mono_PlayerManager.p1;
         map.getTileFromMap(0 + 1, 0 + 1).Owner = mono_PlayerManager.p1;
+        map.getTileFromMap(0 + 2, 0 + 2).Owner = mono_PlayerManager.p1;
         map.getTileFromMap(0 + 3, 0 + 1).Owner = mono_PlayerManager.p2;
         map.getTileFromMap(width - 2, height - 2).Owner = mono_PlayerManager.p2;
         map.getTileFromMap(0, 0).setTileType(Tile.TileType.Empty);

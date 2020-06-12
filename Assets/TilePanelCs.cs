@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using WorldBuilder;
 
 public class TilePanelCs : MonoBehaviour
 {

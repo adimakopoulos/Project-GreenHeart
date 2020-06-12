@@ -1,18 +1,18 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.EventSystems;
-using UnityEngine.UI;
+﻿using UnityEngine;
+using WorldBuilder;
+/*
+ this is where we handle most mouse interaction. i decided to have a script to handle most mouse inputs so 
+ it is eassier to 
+*/
+
+
 
 public class Mouse : MonoBehaviour
 {
-    /*
-     this is where we handle most mouse interaction. i decided to have a script to handle most mouse inputs so 
-     it is eassier to 
-    */
 
     //UI variables
     public GameObject tilePanel;
+    public GameObject Tselect;
 
     //Only player 1 shoyuld have controll of the mouse
     private Player player1 = mono_PlayerManager.p1;
@@ -23,10 +23,8 @@ public class Mouse : MonoBehaviour
     Tile selectedTile;
     void Update()
     {
-        setSelectedTile();
-
         //TODO create Selection effect on the boarder of the tile that is clicked
-        //Update Text Labales and sutff
+        setSelectedTile();
 
         //Tell tile to tell units that the they need to move, set tile direction
         setTileDir();
@@ -42,10 +40,21 @@ public class Mouse : MonoBehaviour
         if (Input.GetMouseButtonUp(0))
         {
             selectedTile = mono_BoardCreate.map.getTileFromMap(doRayCast());
-            updateUI();
+            updateUI();                                                         //Update Text Labales and sutff
             //Debug.Log("selectedTile: "+selectedTile.X +","+ selectedTile.Z);
+            activateTselection();
 
         }
+
+
+        //desselect tile if the player does a right click
+        if (Input.GetMouseButtonDown(1)) {
+            
+            selectedTile = null;
+            Tselect.SetActive(false);
+
+        }
+
     }
     void updateUI()
     {
@@ -56,7 +65,13 @@ public class Mouse : MonoBehaviour
         }
     }
 
-
+    void activateTselection() {
+        if (selectedTile != null)
+        {
+            Tselect.SetActive(true);
+            Tselect.transform.position = new Vector3 (selectedTile.X ,0,selectedTile.Z);
+        }
+    }
 
 
     //firstTile= the first tile that is click
@@ -64,8 +79,6 @@ public class Mouse : MonoBehaviour
     Tile firstTile = null, _neighborTile = null;
     void setTileDir()
     {
-
-        //Handle players draging 
 
         //first tile clicked
         //Also we must check ownership
@@ -77,7 +90,7 @@ public class Mouse : MonoBehaviour
             if (mono_BoardCreate.map.getTileFromMap(clickPoint) != null && mono_BoardCreate.map.getTileFromMap(clickPoint).Owner == player1 )
             {
                 firstTile = mono_BoardCreate.map.getTileFromMap(clickPoint);
-                Debug.Log(firstTile.getGoTile().transform);
+                //Debug.Log(firstTile.getGoTile().transform);
             }
         }
 
@@ -86,43 +99,41 @@ public class Mouse : MonoBehaviour
         if (Input.GetMouseButtonUp(0) && firstTile != null)
         {
 
-            clickPoint = doRayCast();
+            clickPoint = doRayCast();  
             //Check when mouse is out of the Tile to get the direction the player is dragging. 
             //there are 4 possible outcomes. North-up, South-down, West-left, East-right.
 
             bool isCooltoMove;
-            int ftx = firstTile.GamePosition.x;
-            int ftz = firstTile.GamePosition.z;
+            int ftx = firstTile.X;
+            int ftz = firstTile.Z;
             if (ftx > Mathf.FloorToInt(clickPoint.x))
             {
                 _neighborTile = mono_BoardCreate.map.getTileFromMap(ftx - 1, ftz); //get the neighboring tile that is x-1;
                 isCooltoMove = checkMoveValidity(firstTile, _neighborTile, Tile.TileMovementDirection.Left);
                 if (isCooltoMove) { firstTile.MoveDirection = Tile.TileMovementDirection.Left;  }
-
+                //Debug.Log("Left");
             }//left
             if (ftx < Mathf.FloorToInt(clickPoint.x))
             {
                 _neighborTile = mono_BoardCreate.map.getTileFromMap(ftx + 1, ftz);
                 isCooltoMove = checkMoveValidity(firstTile, _neighborTile, Tile.TileMovementDirection.Right);
                 if (isCooltoMove) { firstTile.MoveDirection = Tile.TileMovementDirection.Right;  }
-
+                //Debug.Log("right");
 
             }//right
-            if (firstTile.GamePosition.y > Mathf.FloorToInt(clickPoint.z))
+            if (ftz > Mathf.FloorToInt(clickPoint.z))
             {
                 _neighborTile = mono_BoardCreate.map.getTileFromMap(ftx, ftz - 1);
                 isCooltoMove = checkMoveValidity(firstTile, _neighborTile, Tile.TileMovementDirection.Down);
                 if (isCooltoMove) { firstTile.MoveDirection = Tile.TileMovementDirection.Down; }
-                
+                //Debug.Log("down");
             }//down
-            if (firstTile.GamePosition.y < Mathf.FloorToInt(clickPoint.z))
+            if (ftz < Mathf.FloorToInt(clickPoint.z))
             {
                 _neighborTile = mono_BoardCreate.map.getTileFromMap(ftx, ftz + 1);
                 isCooltoMove = checkMoveValidity(firstTile, _neighborTile, Tile.TileMovementDirection.Up);
                 if (isCooltoMove) { firstTile.MoveDirection = Tile.TileMovementDirection.Up;  }
-                
-
-
+                //Debug.Log("up");
             }//up
             firstTile = null;
         }
@@ -139,8 +150,6 @@ public class Mouse : MonoBehaviour
         }
         else
         {
-
-
             //I sould be able to invade an Enemy Tile
             if (_originalTile.Owner != _nTile.Owner)
             {
@@ -176,7 +185,7 @@ public class Mouse : MonoBehaviour
 
 
     Vector3 doRayCast() {
-
+        //a Y value of -10 means something went Wrong
         Vector3 hit= new Vector3(0f,-10f,0f) ;
 
         Plane plane = new Plane(Vector3.up, Vector3.zero);

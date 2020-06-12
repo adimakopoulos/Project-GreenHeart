@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using WorldBuilder;
 public class Unit {
 
 
@@ -34,7 +34,7 @@ public class Unit {
         go_Unit.transform.position = new Vector3( tile.X, tile.TileGraphicsHeight,  tile.Z);
         go_Unit.transform.SetParent(tile.getGoTile().transform, true);
 
-        go_Unit.AddComponent<mono_Unit>().setUnitData(this);
+        go_Unit.AddComponent<mono_Unit>().setUnitData(this);//this is a bit lazy
        
 
 
@@ -42,11 +42,7 @@ public class Unit {
     }
 
 
-    public void moveToTile (Tile Target){
-        CurrentTile = Target;
-        
 
-    }
     public Tile getTargetTile() { return TargetTile; }
     public void setTargetTile(Tile target) { this.TargetTile = target; }
 

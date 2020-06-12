@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-
+using WorldBuilder;
 public class mono_Battle : MonoBehaviour
 {
     private Tile tile;
@@ -27,17 +27,17 @@ public class mono_Battle : MonoBehaviour
     }
     private void Initialize (){
         int x = Mathf.FloorToInt(gameObject.transform.position.x);
-        int y = Mathf.FloorToInt(gameObject.transform.position.y);
+        int z = Mathf.FloorToInt(gameObject.transform.position.z);
         //Debug.Log("("+gameObject.transform.position.x +","+ gameObject.transform.position.y + ") Battle at");
-        tile = mono_BoardCreate.map.getTileFromMap(x, y);
+        tile = mono_BoardCreate.map.getTileFromMap(x, z);
 
 
         go_battle = new GameObject("BATTLE");
-        go_battle.transform.position = new Vector3(x, y, 0f);
+        go_battle.transform.position = new Vector3(x, z, 0f);
         textUIPrefab = Resources.Load<GameObject>("prefabs/txtMeshProPre") as GameObject;
         myScore = Instantiate(textUIPrefab,this.transform.position, Quaternion.identity, go_battle.transform);
         //make text appear in the middle of tile
-        myScore.transform.localPosition = new Vector3(0.5f, 0.5f, 0);
+        myScore.transform.localPosition = new Vector3(0.5f, 0.3f, 0.5f);
 
 
 
