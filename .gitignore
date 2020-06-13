@@ -24,7 +24,18 @@
 
 # Remove TextMesh 
 /Assets/TextMesh*Pro
+/Assets/TextMesh Pro
 
+# Remove teste folder,witch is build testing verions 
+/teste
+
+# Remove ignore 
+/Ignore This
+/IgnoreThis
+
+# Remove LowPoly prefabs 
+/Assets/LowPoly*Environment*Pack
+/Assets/LowPoly*Environment*Pack.meta
 
 # Visual Studio cache directory
 .vs/

@@ -4,6 +4,25 @@ using UnityEngine;
 
 public class Camera_Controller : MonoBehaviour
 {
+    /*
+     Euler angle is 3 floats that represent the xyz axis in degrees 
+     example (90,0,0) 90 degrees rotation on the x axis 
+    
+     Quaternions has 4. why use them?for example": when u look at 90 degrees in X axis you can no longer rotate at Z axis properly!(this happens for all 3 axis)" 
+     this is unexpected behaviour and it is unaceptable! Quaternions do NOT suffer from this!
+
+     //unity code https://docs.unity3d.com/Manual/QuaternionAndEulerRotationsInUnity.html
+     Implications for scripting
+    When dealing with handling rotations in your scripts,
+    you should use the Quaternion class and its functions to create and modify rotational values. 
+    There are some situations where it is valid to use Euler angles, but you should bear in mind:
+        - You should use the Quaternion Class functions that deal with Euler angles 
+        - Retrieving, modifying, and re-applying Euler values from a rotation can cause unintentional side-effects    
+
+
+         */
+
+
     public Transform camTranform;
 
     private float movementSpeed;

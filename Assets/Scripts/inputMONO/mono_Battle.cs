@@ -37,6 +37,7 @@ public class mono_Battle : MonoBehaviour
         go_battle.transform.position = new Vector3(x, 0, z);
         textUIPrefab = Resources.Load<GameObject>("prefabs/txtMeshProPre") as GameObject;
         myScore = Instantiate(textUIPrefab, this.transform.position, Quaternion.identity, go_battle.transform);
+        myScore.transform.rotation  = Quaternion.LookRotation(Camera.main.transform.position);//
         //make text appear in the middle of tile
         myScore.transform.localPosition = new Vector3(0.5f, 0.3f, 0.5f);
 
@@ -111,6 +112,7 @@ public class mono_Battle : MonoBehaviour
         //ask all units their owners. Store all Players as Unige in the list
         foreach (Unit unit in tile.units)
         {
+             
             //if it doenst contain the name then add it
             if (!(names.Contains(unit.Owner)))
             {
