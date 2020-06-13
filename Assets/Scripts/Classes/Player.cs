@@ -2,35 +2,20 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public class Player  {
     //to do use id to check instread of names
-    string name;
-    int id;  
-    Color playerColor;
+    private  string playerName;
+    private  int id;
+    public  Color playerColor;
 
 
-    public string Name
+    public Player(string playerName,  Color playerColor)
     {
-        get
-        {
-            return name;
-        }
-
-        set
-        {
-            name = value;
-        }
+        this.playerName = playerName;
+        this.playerColor = playerColor;
     }
 
+    public string Name { get => playerName; set => playerName = value; }
     public Color PlayerColor { get => playerColor; set => playerColor = value; }
-
-    public Player(string name, Color color)
-    {
-        this.Name = name;
-        this.playerColor = color;
-    }
-
-    
-
-
 }

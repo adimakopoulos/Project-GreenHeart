@@ -24,6 +24,7 @@ public class mono_Border : MonoBehaviour
 
     public void setColor(Player pl)
     {
+
         foreach (var r in borderRenderes)
         {
              

@@ -24,19 +24,20 @@ public class mono_BoardCreate : MonoBehaviour {
     void startGame() {
 
         map.enableTiles();
+        map.createShadingEffect();
         InvokeRepeating("killExtraUnits", 0, 0.25f);
 
 
         //hard coded stuf for testing
-        map.getTileFromMap(0, 0).Owner = mono_PlayerManager.p1;
-        map.getTileFromMap(0 + 1, 0 + 1).Owner = mono_PlayerManager.p1;
-        map.getTileFromMap(0 + 2, 0 + 2).Owner = mono_PlayerManager.p1;
-        map.getTileFromMap(0 + 3, 0 + 1).Owner = mono_PlayerManager.p2;
-        map.getTileFromMap(width - 2, height - 2).Owner = mono_PlayerManager.p2;
+        map.getTileFromMap(0, 0).Owner = mono_playerManager.p0;
+        map.getTileFromMap(0 + 1, 0 + 1).Owner = mono_playerManager.p1;
+        map.getTileFromMap(0 + 2, 0 + 2).Owner = mono_playerManager.p1;
+        map.getTileFromMap(0 + 3, 0 + 1).Owner = mono_playerManager.p2;
+        map.getTileFromMap(width - 2, height - 2).Owner = mono_playerManager.p2;
         map.getTileFromMap(0, 0).setTileType(Tile.TileType.Empty);
 
-        map.getTileFromMap(width - 1, height - 1).Owner = mono_PlayerManager.p2;
-        map.getTileFromMap(0, height - 1).Owner = mono_PlayerManager.p3;
+        map.getTileFromMap(width - 1, height - 1).Owner = mono_playerManager.p3;
+        map.getTileFromMap(0, height - 1).Owner = mono_playerManager.p4;
     }
 
 
@@ -49,12 +50,14 @@ public class mono_BoardCreate : MonoBehaviour {
         {
             for (int y = 0; y < height; y++)
             {
-                currentUnits = map.getTileFromMap(x, y).units.Count;
-                maxUnits = map.getTileFromMap(x, y).unitMax;
-                if (currentUnits > maxUnits)
+
+                Tile encumberedTile = map.getTileFromMap(x, y);
+                currentUnits = encumberedTile.units.Count;
+                maxUnits = encumberedTile.unitMax;
+                if (currentUnits > maxUnits && encumberedTile.State != Tile.TileState.Besieged)
                 {
-                    Unit temp =(Unit) map.getTileFromMap(x, y).units[currentUnits - 1]; //get last unit
-                    map.getTileFromMap(x, y).units.RemoveAt(currentUnits - 1);          //remove it from tiles list
+                    Unit temp =(Unit)encumberedTile.units[currentUnits - 1]; //get last unit
+                    encumberedTile.units.RemoveAt(currentUnits - 1);          //remove it from tiles list
                     temp.Go_Unit.GetComponent<mono_Unit>().killUnit();                  //Destroy unit game object
                    
                     //Debug.Log("kill unit" + map.getTileFromMap(x, y));
@@ -89,13 +92,4 @@ public class mono_BoardCreate : MonoBehaviour {
         map.MapName = arg;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-
-
-
-
-
-    }
 }

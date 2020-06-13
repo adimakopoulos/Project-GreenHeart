@@ -6,21 +6,33 @@ using WorldBuilder;
 */
 
 
-
+//[RequireComponent(typeof(Tile))]
 public class Mouse : MonoBehaviour
 {
 
     //UI variables
     public GameObject tilePanel;
-    public GameObject Tselect;
+    private GameObject Tselect;
 
     //Only player 1 shoyuld have controll of the mouse
-    private Player player1 = mono_PlayerManager.p1;
+    public Player player1 ;
 
     //where the player clicks in world position (after ray hit)
     Vector3 clickPoint;        
 
     Tile selectedTile;
+
+    
+
+    
+    private void Awake()
+    {
+        
+        string _path = "PreFabs/ScenePrefabs/";
+        //tilePanel = Instantiate(Resources.Load(_path+"", typeof(GameObject))) as GameObject;
+        Tselect = Instantiate(Resources.Load(_path+"Tselect", typeof(GameObject))) as GameObject;
+        player1 = mono_playerManager.p1;
+    }
     void Update()
     {
         //TODO create Selection effect on the boarder of the tile that is clicked

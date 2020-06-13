@@ -18,13 +18,13 @@ namespace WorldBuilder {
 
         //Game positions
         private readonly int x, z;
-        private readonly float tileGraphicsHeight = 0.1f;//make it so units spawn on top of the tile  
+        private readonly float tileGraphicsHeight = 0.2f;//make it so units spawn on top of the tile  
         private readonly Vector3Int vec3Pos;//maybe this is a bit redutant?(because we already have gameObject.transfor witcht already holds the same information)
 
         //Gameplay Variablas
         private Building building;
         GameObject go_Tile;
-        Player owner = mono_PlayerManager.p0; //neutral player as an owner
+        Player owner =  mono_playerManager.p0; //neutral player as an owner
         float spawnRate = 2.0f;
         public int unitMax = 10;
 
@@ -68,7 +68,7 @@ namespace WorldBuilder {
 
         public void setTileType(TileType type)
         {
-            //update data and visauls
+            //update visauls depenting on type 
             this.Type = type;
             setMaterial(type, go_Tile);
         }
@@ -101,6 +101,8 @@ namespace WorldBuilder {
         //hook up the Materials with the game objectes()
         private void setMaterial(TileType type, GameObject go)
         {
+
+
             string matPath = "Materials/Terrain/";
             if (Tile.TileType.Grass == type)
             {
@@ -134,9 +136,6 @@ namespace WorldBuilder {
             }
 
 
-
-
-
         }
 
 
@@ -144,7 +143,7 @@ namespace WorldBuilder {
         {
 
             //check if the tile is owned by a playable player and that it has not exceted the max number of units Allowd
-            if (this.owner != mono_PlayerManager.p0 && units.Count < unitMax)
+            if (this.owner != mono_playerManager.p0 && units.Count < unitMax)
             {
                 Unit soldier = new Unit(this, this.Owner);
                 units.Add(soldier);
@@ -166,7 +165,7 @@ namespace WorldBuilder {
             {
                 owner = value;
                 //if the player is human or AI then start spawning units using clock to set the rate of spawn
-                if (this.owner != mono_PlayerManager.p0)
+                if (this.owner != mono_playerManager.p0)
                 {
 
                     this.State = TileState.Claimed;
@@ -176,6 +175,8 @@ namespace WorldBuilder {
                     mnBorder.setColor(this.Owner);
 
                 }
+                
+
             }
         }
 
@@ -295,10 +296,11 @@ namespace WorldBuilder {
             {
 
                 state = value;
-                if (State == TileState.Besieged && owner != mono_PlayerManager.p0)
+                if (State == TileState.Besieged && owner != mono_playerManager.p0)
                 {
                     this.MoveDirection = TileMovementDirection.Center;
-                    Debug.Log("Huh");
+                    Debug.Log("MoveDirection was set To Center");
+                    
                 }
             }
 

@@ -6,22 +6,19 @@ public class Unit {
 
 
 
-    
-    int attack;
-    public int health;
+
     Player owner;
     GameObject go_Unit;
     Tile CurrentTile, TargetTile;
     float speed=1f;
-
+    public float health=100;
 
     public Unit() { }
 
 
     public Unit(Tile tile, Player player) {
 
-        this.attack = 25;
-        this.health = 100;
+
         owner = player;
         CurrentTile = tile;
         TargetTile = tile;
@@ -30,8 +27,8 @@ public class Unit {
 
 
         //Spawn unit in a random posiotion inside a tile
-        
-        go_Unit.transform.position = new Vector3( tile.X, tile.TileGraphicsHeight,  tile.Z);
+
+        go_Unit.transform.position = new Vector3( tile.X+0.2f, tile.TileGraphicsHeight,  tile.Z+0.2f);
         go_Unit.transform.SetParent(tile.getGoTile().transform, true);
 
         go_Unit.AddComponent<mono_Unit>().setUnitData(this);//this is a bit lazy

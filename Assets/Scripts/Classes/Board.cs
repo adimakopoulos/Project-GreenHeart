@@ -3,7 +3,7 @@ using System.IO;
 
 namespace WorldBuilder
 {
-    [RequireComponent(typeof(Tile))]
+    
     public class Board
     {
 
@@ -12,7 +12,6 @@ namespace WorldBuilder
         int width = 0;
         int height = 0;
         string mapName = "";//gets init from a triger in the textfield savefilename
-
 
 
         public Board(int width, int height)
@@ -47,6 +46,27 @@ namespace WorldBuilder
             tiles[0, 0].setTileType(Tile.TileType.Castle);
             tiles[Width - 1, Height - 1].setTileType(Tile.TileType.Castle);
             //Debug.Log("World created with Width: " + this.width + ",Height " + this.height);
+
+        }
+
+        public void createShadingEffect() {
+            for (int x = 0; x < width; x++)
+            {
+                for (int z = 0; z < height; z++)
+                {
+
+                    
+
+                    if ((x+z)%2 ==0)
+                    {
+                        Color _darker = new Color(-0.05f, -0.05f, -0.05f, 0f);
+
+                        tiles[x, z].getGoTile().GetComponent<Renderer>().material.color -= _darker;
+                    }
+
+                }
+            }
+
         }
 
         public void enableTiles()
