@@ -99,7 +99,7 @@ public class Mouse : MonoBehaviour
 
             clickPoint= doRayCast();
             //check if player hit outside of map and if he owns the tile
-            if (mono_BoardCreate.map.getTileFromMap(clickPoint) != null && mono_BoardCreate.map.getTileFromMap(clickPoint).Owner == player1 )
+            if (mono_BoardCreate.map.getTileFromMap(clickPoint) != null  )//&& mono_BoardCreate.map.getTileFromMap(clickPoint).Owner == player1
             {
                 firstTile = mono_BoardCreate.map.getTileFromMap(clickPoint);
                 //Debug.Log(firstTile.getGoTile().transform);

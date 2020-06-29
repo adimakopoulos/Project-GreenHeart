@@ -7,19 +7,18 @@ using WorldBuilder;
 public class mono_Battle : MonoBehaviour
 {
     private Tile tile;
-    GameObject go_battle;//this is just an empty visual LOL
+    GameObject go_battle;
     private Player _strongestPlayer;
     [SerializeField] private GameObject textUIPrefab;
+    Army _army1, _army2, _army3, _army4;
 
-
-    //GameObject myScore = Resources.Load<GameObject>("Text") as GameObject;
     GameObject myScore;
     // Start is called before the first frame update
     void Start()
     {
         Initialize();
-        InvokeRepeating("addCapurePoints", 0, 0.25f); //every hlf a second add capture points to the Leading Army so in Conqure the Tile
-
+        InvokeRepeating("addCapurePoints", 1, 0.25f); //every hlf a second add capture points to the Leading Army so in Conqure the Tile
+        InvokeRepeating("doBattle", 1, 0.25f);
 
 
 
@@ -33,14 +32,13 @@ public class mono_Battle : MonoBehaviour
         tile = mono_BoardCreate.map.getTileFromMap(x, z);
 
 
-        go_battle = new GameObject("BATTLE");
+        go_battle = new GameObject("BATTLE: " + x + " " + z);
         go_battle.transform.position = new Vector3(x, 0, z);
         textUIPrefab = Resources.Load<GameObject>("prefabs/txtMeshProPre") as GameObject;
         myScore = Instantiate(textUIPrefab, this.transform.position, Quaternion.identity, go_battle.transform);
-        myScore.transform.rotation  = Quaternion.LookRotation(Camera.main.transform.position);//
+        //
         //make text appear in the middle of tile
-        myScore.transform.localPosition = new Vector3(0.5f, 0.3f, 0.5f);
-
+        myScore.transform.localPosition = new Vector3(0.5f, 0.7f, 0.5f);
 
 
 
@@ -51,12 +49,12 @@ public class mono_Battle : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
-        //in case that there is only 1 player
-        setLeadingTeam();
+        myScore.transform.rotation = Quaternion.LookRotation(-Camera.main.transform.position);
+ 
+  
         setProgress();
         //in case there are 2 or more players
-        doDamage();
+
 
 
     }
@@ -86,62 +84,89 @@ public class mono_Battle : MonoBehaviour
         {
             if (tile.capturePoints < 101 && _strongestPlayer != tile.Owner)
             {
-                tile.capturePoints += tile.units.Count;
+                tile.capturePoints += tile.MoveableGameobjects.Count;
 
 
             }
             else if (tile.capturePoints >= 100 && _strongestPlayer != tile.Owner)
             {
-                tile.capturePoints = 0;
+               
                 tile.Owner = _strongestPlayer;
                 tile.getGoTile().GetComponent<mono_Battle>().enabled = false;
-                Debug.Log("Destroy BATTLE");
+                Debug.Log("Destroy Disabble");
+                myScore.GetComponent<TextMeshPro>().text = " ";
                 CancelInvoke();//stop adding points
 
-                Destroy(go_battle);
+                //Destroy(go_battle);
             }
         }
     }
 
 
     //how many people are trying to Conguer this tile
-    ArrayList names = new ArrayList();
+
+    List<string> names = new List<string>();
     public int getNumberOfArmies()
     {
+        tile.MoveableGameobjects[0].GetComponent<ITakeDamage>().getOwner().ToString();
 
         //ask all units their owners. Store all Players as Unige in the list
-        foreach (Unit unit in tile.units)
+        foreach (GameObject unit in tile.MoveableGameobjects)
         {
-             
-            //if it doenst contain the name then add it
-            if (!(names.Contains(unit.Owner)))
+            ITakeDamage temp = unit.GetComponent<ITakeDamage>();
+            //Debug.Log(unit.GetComponent<ITakeDamage>().getOwner().ToString());
+            if (temp != null)
             {
-                names.Add(unit.Owner);
+                //if it doenst contain the name then add it
+                if (!(names.Contains(temp.getOwner().Name)))
+                {
+                    names.Add(temp.getOwner().Name);
+                }
             }
+
 
         }
 
         return names.Count;
     }
 
-    //calculate capture point
-    public void setLeadingTeam()
+    
+ 
+
+    public void doBattle()
     {
+        
         int _getNumberOfArmies = getNumberOfArmies();
         if (_getNumberOfArmies == 1)
         {
-            _strongestPlayer = (Player)names[0];
-            //Debug.Log(_strongestPlayer.Name);
+            _strongestPlayer = mono_playerManager.FindPlayerByName(names[0]);
         }
-        else if (_getNumberOfArmies == 2)
+        else if (_getNumberOfArmies > 1 && _getNumberOfArmies < 5)
         {
-            //tile.
+            
+            List <ITakeDamage> createArmy = new List<ITakeDamage>() ;
+            foreach (GameObject unit in tile.MoveableGameobjects)
+            {
+                foreach (var name in names)
+                {
+                    ITakeDamage temp = unit.GetComponent<ITakeDamage>();
+                    
 
+                    if (name.Equals(temp.getOwner().Name)) {
+                        createArmy.Add(temp); 
+                    }
+                }
+
+            }
+
+
+
+            Debug.Log("Damage Doing ");
 
         }
         else
         {
-            Debug.Log("Something went wrong in mono_Battle ");
+            Debug.LogWarning("Something went wrong in mono_Battle. there are 5 or more people contesting from a tile");
             //realisticly we should never be in here
             return;
 

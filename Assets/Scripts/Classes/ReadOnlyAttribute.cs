@@ -2,8 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-
-public class Castle  {
-
+public class ReadOnlyAttribute : PropertyAttribute
+{
 
 }

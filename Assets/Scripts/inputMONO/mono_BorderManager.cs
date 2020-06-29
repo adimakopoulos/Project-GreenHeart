@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class mono_Border : MonoBehaviour 
+public class mono_BorderManager : MonoBehaviour 
 {
 
     public GameObject borderN, borderS, borderE, borderW;

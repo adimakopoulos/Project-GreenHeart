@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -27,4 +28,23 @@ public static class ExtensionMethods
 
 
 
+    public static IEnumerable<T> RepopulateEXT<T>(this IEnumerable<T> input)
+    {
+        var repopulated = input.OrderBy(x => x);
+
+        T prev;
+        foreach (var element in input)
+        {
+            if (element != null)
+            {
+                yield return element;
+            }
+
+
+            
+            prev = element;
+        }
+        //input.ToList<T>().TrimExcess();
+
+    }
 }

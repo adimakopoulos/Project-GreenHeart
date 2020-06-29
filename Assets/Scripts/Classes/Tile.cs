@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -18,28 +19,27 @@ namespace WorldBuilder {
 
         //Game positions
         private readonly int x, z;
-        private readonly float tileGraphicsHeight = 0.2f;//make it so units spawn on top of the tile  
-        private readonly Vector3Int vec3Pos;//maybe this is a bit redutant?(because we already have gameObject.transfor witcht already holds the same information)
+        private const float  tileGraphicsHeight = 0.2f;//make it so units spawn on top of the tile  
 
         //Gameplay Variablas
         private Building building;
         GameObject go_Tile;
         Player owner =  mono_playerManager.p0; //neutral player as an owner
-        float spawnRate = 2.0f;
-        public int unitMax = 10;
+        private float _spawnRate = 5.0f;
+        public int unitMax = 1;
 
 
 
         //after researching i found that Lists should be used here. doesnt matter if theoreticly this is a dyniamic collection. 
         //Also we have to take to considaration that leaving this uncaped might crash peoples hardware.
         // Creating a list with an initial size
-        public List<Unit> units = new List<Unit>(500);
+        public List<GameObject> MoveableGameobjects = new List<GameObject>(50);
         //public ArrayList units = new ArrayList(); 
         public float capturePoints = 0;
 
         //neighboring tiles
-        private Tile _tileNorth, _tileSouth, _tileEast, _tileWest;
-        mono_Border mnBorder;
+        public Tile _tileNorth, _tileSouth, _tileEast, _tileWest;
+        mono_BorderManager mnBorder;
 
 
 
@@ -52,16 +52,17 @@ namespace WorldBuilder {
             this.x = Location.x;
             this.z = Location.z;
             this.State = state;
-            this.vec3Pos = Location;
             //SET game object
             go_Tile = GameObject.Instantiate(Resources.Load("PreFabs/PreTile", typeof(GameObject))) as GameObject;
             go_Tile.name = "Tile = X,Z:  (" + x + "," + z + ")";
             go_Tile.transform.position = Location;
+            go_Tile.AddComponent<mono_Clock>();
+
             setTileType(type);
 
+            
 
-            go_Tile.AddComponent<mono_Clock>();
-            mnBorder = go_Tile.GetComponent<mono_Border>();
+            mnBorder = go_Tile.GetComponent<mono_BorderManager>();
 
         }
 
@@ -75,7 +76,10 @@ namespace WorldBuilder {
 
 
 
-
+        /// <summary>
+        /// Returns the game object tile
+        /// </summary>
+        /// <returns>GameObject</returns>
         public GameObject getGoTile()
         {
             if (go_Tile != null)
@@ -84,7 +88,7 @@ namespace WorldBuilder {
             }
             else
             {
-                Debug.Log("Null GameObjectTile.");
+                Debug.Log("Null GameObject Tile.");
                 return null;
             }
 
@@ -93,7 +97,7 @@ namespace WorldBuilder {
 
         public int getUnitsInTile()
         {
-            return units.Count;
+            return MoveableGameobjects.Count;
         }
 
 
@@ -143,10 +147,33 @@ namespace WorldBuilder {
         {
 
             //check if the tile is owned by a playable player and that it has not exceted the max number of units Allowd
-            if (this.owner != mono_playerManager.p0 && units.Count < unitMax)
+            if (MoveableGameobjects.Count < unitMax)
             {
-                Unit soldier = new Unit(this, this.Owner);
-                units.Add(soldier);
+
+
+                
+                MoveableGameobjects.Add(UnitSpawnFactory.SpawnHoplite(this, this.Owner));
+                MoveableGameobjects.Add(UnitSpawnFactory.SpawnHoplite(this, this.Owner));
+                MoveableGameobjects.Add(UnitSpawnFactory.SpawnHoplite(this, this.Owner));
+                MoveableGameobjects.Add(UnitSpawnFactory.SpawnHoplite(this, this.Owner));
+                MoveableGameobjects.Add(UnitSpawnFactory.SpawnHoplite(this, this.Owner));
+                MoveableGameobjects.Add(UnitSpawnFactory.SpawnHoplite(this, this.Owner));
+                MoveableGameobjects.Add(UnitSpawnFactory.SpawnHypaspist(this, this.Owner));
+                MoveableGameobjects.Add(UnitSpawnFactory.SpawnHypaspist(this, this.Owner));
+                MoveableGameobjects.Add(UnitSpawnFactory.SpawnHypaspist(this, this.Owner));
+                MoveableGameobjects.Add(UnitSpawnFactory.SpawnHypaspist(this, this.Owner));
+                MoveableGameobjects.Add(UnitSpawnFactory.SpawnHypaspist(this, this.Owner));
+                MoveableGameobjects.Add(UnitSpawnFactory.SpawnHypaspist(this, this.Owner));
+
+
+                //MoveableGameobjects.TrimExcess();
+                //MoveableGameobjects.Add(UnitSpawnFactory.SpawnHypaspist(this, this.Owner));
+
+                //Debug.Log(this.MoveableGameobjects[0].GetComponent<ITakeDamage>().getOwner().ToString() + " " + this.MoveableGameobjects[0].name);
+                //ITakeDamage tem = this.MoveableGameobjects[1].GetComponent(typeof(ITakeDamage)) as ITakeDamage;
+                //Debug.Log(tem.getOwner().ToString() + " -----" + this.MoveableGameobjects[1].name + "           " + this.MoveableGameobjects[1].name);
+                //Debug.Log(this.MoveableGameobjects[0].GetComponent<ITakeDamage>().getOwner().ToString());
+                //Debug.Log(this.MoveableGameobjects[1].GetComponent<ITakeDamage>().getOwner().ToString()); //gameObject.GetComponent(typeof(HingeJoint)) as HingeJoint;
                 //Debug.Log("Unit created and add to QUQU in tile x"+this.X+"//y"+this.Y);
             }
 
@@ -169,7 +196,8 @@ namespace WorldBuilder {
                 {
 
                     this.State = TileState.Claimed;
-                    this.go_Tile.GetComponent<mono_Clock>().createClock(this.spawnRate, this);
+                    this.capturePoints = 0;
+                    this.go_Tile.GetComponent<mono_Clock>().createClock(this._spawnRate, this);
                     this.go_Tile.GetComponent<mono_Clock>().startClock();
                     createBorders();
                     mnBorder.setColor(this.Owner);
@@ -181,11 +209,14 @@ namespace WorldBuilder {
         }
 
 
-
+        /// <summary>
+        /// this logic must be run when the tilemap has finished spawning
+        /// </summary>
         void createBorders()
         {
 
-
+            //dissable the borders when 2 tiles that "touch" each other have the same Owner
+            //Else the tile will activate its borders. This check happens 4 times for north, south, east and west of the tile
             //-----------------------------------------------------------------------
             if (_tileNorth != null)
             {
@@ -294,8 +325,14 @@ namespace WorldBuilder {
 
             set
             {
-
+               
                 state = value;
+                if (State == TileState.Besieged) {
+                    
+
+                    //gameObject.GetComponent(typeof(HingeJoint)) as HingeJoint;
+                    
+                }
                 if (State == TileState.Besieged && owner != mono_playerManager.p0)
                 {
                     this.MoveDirection = TileMovementDirection.Center;
@@ -311,7 +348,6 @@ namespace WorldBuilder {
             set => type = value;
 
         }
-        public Vector3Int Vec3Pos { get => vec3Pos; }
 
         public int X => x;
 
@@ -321,12 +357,12 @@ namespace WorldBuilder {
 
         public void clearUnits()
         {
-            units.Clear();
+            MoveableGameobjects.Clear();
         }
 
-        public void addUnits(Unit soldier)
+        public void addUnits(GameObject soldier)
         {
-            units.Add(soldier);
+            MoveableGameobjects.Add(soldier);
 
         }
 

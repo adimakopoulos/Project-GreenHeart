@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6282571538939560189}
   - component: {fileID: 6282571538939560188}
+  - component: {fileID: 2078148536}
   m_Layer: 0
   m_Name: go_Board
   m_TagString: Untagged
@@ -43,5 +44,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 478d855f20e493d47944de2c758baa0e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  width: 4
-  height: 4
+  width: 20
+  height: 20
+--- !u!114 &2078148536
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6282571538939560187}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 71a82b8efb66a3640b4ec105fa37311a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

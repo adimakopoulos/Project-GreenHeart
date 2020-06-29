@@ -91,6 +91,7 @@ GameObject:
   - component: {fileID: 4364899220524588406}
   - component: {fileID: 4364899220524588405}
   - component: {fileID: 431975691114607515}
+  - component: {fileID: 3903109957183556090}
   m_Layer: 0
   m_Name: PreTile
   m_TagString: Untagged
@@ -191,6 +192,19 @@ MonoBehaviour:
   borderS: {fileID: 4686189796128761348}
   borderE: {fileID: 8486244746188074282}
   borderW: {fileID: 3202857078592828624}
+--- !u!114 &3903109957183556090
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4364899220524588404}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a1dc08f2ace58044dbdbfb6c2414cb61, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  textUIPrefab: {fileID: 0}
 --- !u!1 &4686189796128761348
 GameObject:
   m_ObjectHideFlags: 0

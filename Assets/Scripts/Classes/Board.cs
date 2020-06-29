@@ -14,7 +14,7 @@ namespace WorldBuilder
         string mapName = "";//gets init from a triger in the textfield savefilename
 
 
-        public Board(int width, int height)
+        public Board(int width, int height )
         {
             this.Width = width;
             this.Height = height;
@@ -38,9 +38,10 @@ namespace WorldBuilder
                 {
 
                     tiles[x, z].setNeighbors(getTileFromMap(x, z + 1), getTileFromMap(x, z - 1), getTileFromMap(x + 1, z), getTileFromMap(x - 1, z));
-                    //this will return nulls so make sure to check
+                
                 }
             }
+
 
 
             tiles[0, 0].setTileType(Tile.TileType.Castle);
