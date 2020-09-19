@@ -14,7 +14,7 @@ public class TilePanelCs : MonoBehaviour
     public void updateLabels(Tile tile) {
         owner.text = tile.Owner.Name;
         type.text = tile.Type.ToString();
-        state.text = "Units in Tile:" + tile.getUnitsInTile().ToString() + " State: " + tile.State.ToString();
+        state.text = "Units in Tile:" + tile.getNumberOfUnitsInTile().ToString() + " State: " + tile.State.ToString();
 
     }
 

@@ -11,7 +11,7 @@ public class clickDamage : MonoBehaviour
         if (Input.GetKeyDown("0"))
         {
 
-            float start;
+            //float start;
 
             //start = Time.realtimeSinceStartup;
             //HitManager hitM = null;
